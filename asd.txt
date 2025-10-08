@@ -1,0 +1,8 @@
+1) Crear entidad tickets para guardar los "vendidos" ?
+
+2) En Espectaculo me guardo una lista con los tickets vendidos?
+
+3) Usuarios -> admin da de alta un usuario, pero como diferencio que tipo estoy dando de alta?
+Puedo hacer un atributo que diga bool "admin"?
+
+4) La actividad dice que el Precio es del estadio. Lo puse en espectaculo
