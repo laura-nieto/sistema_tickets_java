@@ -1,7 +1,8 @@
+package Entidades;
 public class Vendedor extends Usuario {
 
-    public Vendedor(String nombre, String apellido, String usuario, String contrasena) {
-        super(nombre, apellido, usuario, contrasena);
+    public Vendedor(Integer id, String nombre, String apellido, String doc, String usuario, String contrasena, Boolean isAdmin) {
+        super(id, nombre, apellido, doc, usuario, contrasena, isAdmin);
     }
 
     public void vender(String nombre, String apellido, Espectaculo espect, Integer cantidad) {

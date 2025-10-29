@@ -1,15 +1,26 @@
+package Entidades;
 public abstract class Usuario {
+
+    private Integer id;
     private String name;
     private String lastname;
-
+    private String document;
     private String username;
     private String password;
+    private Boolean isAdmin;
 
-    public Usuario (String nombre, String apellido, String usuario, String contrasena) {
+    public Usuario (Integer id, String nombre, String apellido, String doc, String usuario, String contrasena, Boolean isAdmin) {
+        this.id       = id;
         this.name     = nombre;
         this.lastname = apellido;
+        this.document = doc;
         this.username = usuario;
         this.password = contrasena;
+        this.isAdmin  = isAdmin;
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public String getName() {
@@ -28,11 +39,11 @@ public abstract class Usuario {
         return password;
     }
 
-    public void login(String username, String password) {
-        if (username == this.username && password == this.password) {
-            System.out.println("Ingresado");
-        } else {
-            System.out.println("Error en alguno de los datos");
-        }
+    public String getDocument() {
+        return document;
+    }
+
+    public Boolean getIsAdmin() {
+        return isAdmin;
     }
 }

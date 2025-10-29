@@ -1,3 +1,4 @@
+package Entidades;
 import java.sql.Timestamp;
 
 public class Espectaculo {

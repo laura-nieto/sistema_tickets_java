@@ -1,15 +1,23 @@
+package Entidades;
 public class Estadio {
+    
+    private Integer id;
     private String name;
     private Integer capacity;
     private String addres;
     
 
-    public Estadio (String nombre, String direccion, Integer capacidad) {
+    public Estadio (Integer id, String nombre, String direccion, Integer capacidad) {
+        this.id       = id;
         this.name     = nombre;
         this.addres   = direccion;
         this.capacity = capacidad;
     }
     
+    public Integer getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
