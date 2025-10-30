@@ -43,9 +43,8 @@ public class UsuarioDB extends BaseH2 implements ICrud<Usuario>{
     }
 
     @Override
-    public Usuario get(String column, String value) throws IOException, ClassNotFoundException, SQLException, RegistroNotFoundExeption {
+    public Usuario get(String sql, String value) throws IOException, ClassNotFoundException, SQLException, RegistroNotFoundExeption {
 
-        String sql = "SELECT ID, NAME, LASTNAME, DOCUMENT, USERNAME, PASSWORD, ISADMIN FROM USUARIOS WHERE " + column + " = ?";
 		ResultSet rs = selectSql(sql, value);
 
         Usuario u = null;

@@ -1,20 +1,16 @@
-package Servicio;
+package Vista;
 
 import javax.swing.*;
 
-import Vista.EstadioView;
-import Vista.LoginView;
-import Vista.MainView;
-
 import java.awt.*;
 
-public class AppFrame extends JFrame {
+public class AppView extends JFrame {
 
     private CardLayout cardLayout;
 
     private JPanel mainPanel;
 
-    public AppFrame() {
+    public AppView() {
         setTitle("Ticket Up");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1000, 700);

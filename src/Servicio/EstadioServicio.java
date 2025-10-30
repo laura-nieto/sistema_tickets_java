@@ -30,4 +30,19 @@ public class EstadioServicio {
         return estadios;
     }
 
+    public void insert(String nombre, Integer capacidad, String direccion) throws DatabaseException {
+
+        try {
+            
+            Estadio est = new Estadio(nombre, direccion, capacidad);
+
+            persistencia.save(est);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new DatabaseException();
+        }
+
+    }
+
 }

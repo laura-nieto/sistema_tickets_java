@@ -13,6 +13,12 @@ public class Estadio {
         this.addres   = direccion;
         this.capacity = capacidad;
     }
+
+    public Estadio (String nombre, String direccion, Integer capacidad) {
+        this.name     = nombre;
+        this.addres   = direccion;
+        this.capacity = capacidad;
+    }
     
     public Integer getId() {
         return id;

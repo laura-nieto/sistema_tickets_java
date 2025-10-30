@@ -12,9 +12,10 @@ import Excepciones.RegistroNotFoundExeption;
 public class EstadioDB extends BaseH2 implements ICrud<Estadio>{
 
     @Override
-    public void save(Estadio t) throws IOException, SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'save'");
+    public void save(Estadio estadio) throws IOException, SQLException {
+		String sql = "INSERT INTO ESTADIOS (NAME, CAPACITY, ADDRESS) VALUES (?,?,?)";
+
+		updateDeleteInsertSql(sql, estadio.getName(), estadio.getCapacity(), estadio.getAddres());
     }
 
     @Override

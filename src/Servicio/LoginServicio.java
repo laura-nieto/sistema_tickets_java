@@ -21,7 +21,9 @@ public class LoginServicio {
         Usuario user = null;
 
         try {
-            user = persistencia.get("username", username);
+            String sql = "SELECT ID, NAME, LASTNAME, DOCUMENT, USERNAME, PASSWORD, ISADMIN FROM USUARIOS WHERE username = ?";
+
+            user = persistencia.get(sql, username);
 
             if (!password.equals(user.getPassword())) {
                 throw new RegistroNotFoundExeption();

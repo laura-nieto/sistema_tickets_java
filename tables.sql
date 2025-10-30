@@ -23,7 +23,7 @@ CREATE TABLE espectaculos (
     price DECIMAL(10,2) NOT NULL,
     
     CONSTRAINT fk_espectaculo_estadio
-        FOREIGN KEY (estadio_id) REFERENCES estadio(id)
+        FOREIGN KEY (estadio_id) REFERENCES estadios(id)
 );
 
 INSERT INTO usuarios (name, lastname, document, username, password, isAdmin)

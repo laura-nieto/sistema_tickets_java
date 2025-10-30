@@ -1,13 +1,13 @@
 import javax.swing.SwingUtilities;
 
-import Servicio.AppFrame;
+import Vista.AppView;
 
 
 public class App {
     public static void main(String[] args) throws Exception {
         
         SwingUtilities.invokeLater(() -> {
-            new AppFrame();
+            new AppView();
         });
     
     }

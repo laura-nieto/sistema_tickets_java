@@ -19,13 +19,13 @@ import javax.swing.table.DefaultTableModel;
 
 import Entidades.Estadio;
 import Excepciones.DatabaseException;
+import Excepciones.FormularioInvalidoException;
 import Persistencia.EstadioDB;
-import Servicio.AppFrame;
 import Servicio.EstadioServicio;
 
 public class EstadioView extends JPanel {
 
-    private AppFrame frame;
+    private AppView frame;
 
     private EstadioServicio service;
 
@@ -39,10 +39,10 @@ public class EstadioView extends JPanel {
 
     private JTextField txtNombre, txtCapacidad, txtDireccion;
 
-    private boolean modoEdicion = false;
-    private int idEdicion = -1;
+    private Boolean modoEdicion = false;
+    private Integer idEdicion = -1;
 
-    public EstadioView(AppFrame frame) {
+    public EstadioView(AppView frame) {
 
         this.frame = frame;
 
@@ -84,11 +84,10 @@ public class EstadioView extends JPanel {
         panelLista.add(panelButtons, BorderLayout.NORTH);
 
         btnCrear.addActionListener(e -> mostrarFormulario(false, -1));
-        btnCrear.addActionListener(e -> {
-            int fila = tabla.getSelectedRow();
+        btnEditar.addActionListener(e -> {
+            Integer fila = tabla.getSelectedRow();
             if (fila >= 0) {
-                int id = (int) tabla.getValueAt(fila, 0);
-                mostrarFormulario(true, -1);
+                mostrarFormulario(true, fila);
             } else {
                 JOptionPane.showMessageDialog(this, "Seleccioná un estadio para editar", "Aviso", JOptionPane.WARNING_MESSAGE);
             }
@@ -108,7 +107,7 @@ public class EstadioView extends JPanel {
         modelo = new DefaultTableModel(new Object[]{"ID", "Nombre", "Capacidad", "Dirección", "Acciones"}, 0);
         tabla = new JTable(modelo) {
             public boolean isCellEditable(int row, int col) {
-                return col == 4;
+                return col == 5;
             }
         };
 
@@ -155,7 +154,14 @@ public class EstadioView extends JPanel {
 
         JButton btnGuardar = new JButton("Guardar");
         panelFormulario.add(btnGuardar);
-        btnGuardar.addActionListener(e -> guardarEstadio());
+        btnGuardar.addActionListener(e -> {
+            try {
+                guardarEstadio();
+            } catch (FormularioInvalidoException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(frame, "Uno de los campos es invalido.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
 
         JButton btnCancelar = new JButton("Cancelar");
         panelFormulario.add(btnCancelar);
@@ -170,37 +176,50 @@ public class EstadioView extends JPanel {
 
     private void mostrarFormulario(boolean editar, int id) {
         this.modoEdicion = editar;
-        this.idEdicion = id;
 
         if (editar) {
-            // Cargar datos existentes
-            txtNombre.setText((String) modelo.getValueAt(id, 1));
-            txtCapacidad.setText((String) modelo.getValueAt(id, 2));
-            txtDireccion.setText((String) modelo.getValueAt(id, 3));
-        } else {
-            txtNombre.setText("");
-            txtCapacidad.setText("");
-            txtDireccion.setText("");
+
+            this.idEdicion = (Integer) tabla.getValueAt(id, 0);
+            Integer cap = (Integer) tabla.getValueAt(id, 2);
+
+            txtNombre.setText((String) tabla.getValueAt(id, 1));
+            txtCapacidad.setText(cap.toString());
+            txtDireccion.setText((String) tabla.getValueAt(id, 3));
         }
 
         layout.show(panelCards, "form");
     }
 
-    private void guardarEstadio() {
+    private void guardarEstadio() throws FormularioInvalidoException {
         String nombre = txtNombre.getText();
-        String capacidad = txtCapacidad.getText();
+        Integer capacidad = Integer.valueOf(txtCapacidad.getText());
         String direccion = txtDireccion.getText();
+
+        validarCampos(nombre, capacidad, direccion);
 
         if (modoEdicion && idEdicion >= 0) {
             modelo.setValueAt(nombre, idEdicion, 1);
             modelo.setValueAt(capacidad, idEdicion, 2);
             modelo.setValueAt(direccion, idEdicion, 3);
+
+            // update
         } else {
             int nextId = modelo.getRowCount() + 1;
             modelo.addRow(new Object[]{String.valueOf(nextId), nombre, capacidad, direccion});
+
+            // insert
         }
 
         layout.show(panelCards, "lista");
+    }
+
+    private Boolean validarCampos(String nombre, Integer capacidad, String direccion) throws FormularioInvalidoException {
+
+        if (nombre.isEmpty() || direccion.isEmpty() || capacidad <= 0) {
+            throw new FormularioInvalidoException();
+        }
+
+        return true;
     }
 
     private void borrarEstadio(int id) {

@@ -9,12 +9,11 @@ import Persistencia.UsuarioDB;
 
 import java.awt.*;
 
-import Servicio.AppFrame;
 import Servicio.LoginServicio;
 
 public class LoginView extends JPanel {
     
-    private AppFrame frame;
+    private AppView frame;
 
     private LoginServicio service;
 
@@ -22,7 +21,7 @@ public class LoginView extends JPanel {
     private JPasswordField passwordField;
     private JButton loginButton;
 
-    public LoginView(AppFrame frame) {
+    public LoginView(AppView frame) {
 
         this.frame = frame;
 
