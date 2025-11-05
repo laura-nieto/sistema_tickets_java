@@ -1,14 +1,14 @@
 package Vista;
 
+import java.awt.GridLayout;
+
 import javax.swing.*;
 
+import Entidades.Administrador;
 import Entidades.Usuario;
 import Excepciones.FormularioInvalidoException;
 import Excepciones.RegistroNotFoundExeption;
 import Persistencia.UsuarioDB;
-
-import java.awt.*;
-
 import Servicio.LoginServicio;
 
 public class LoginView extends JPanel {
@@ -69,7 +69,7 @@ public class LoginView extends JPanel {
             Usuario user = service.login(usuario, password);
 
             // Armo el menu
-            if (user.getIsAdmin()) {
+            if (user instanceof Administrador) {
                 frame.createMenu(true);
             } else {
                 frame.createMenu(false);

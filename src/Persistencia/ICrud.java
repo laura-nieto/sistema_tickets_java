@@ -8,16 +8,16 @@ import Excepciones.RegistroNotFoundExeption;
 
 public interface ICrud<T> {
 	
-	public void save(T t) throws IOException, SQLException;
+	public void save(T t) throws SQLException;
 
-	public T get(Integer id) throws IOException, ClassNotFoundException, SQLException;
+	public T get(Integer id) throws IOException, ClassNotFoundException, SQLException, RegistroNotFoundExeption;
 
-	public T get(String column, String value) throws IOException, ClassNotFoundException, SQLException, RegistroNotFoundExeption;
+	public T get(String sql, String value) throws IOException, ClassNotFoundException, SQLException;
 
 	public List<T> get() throws SQLException, IOException, ClassNotFoundException;
 
-	public void update(T t);
+	public void update(T t) throws SQLException;
 
-	public void delete(T t);
+	public void delete(T t) throws SQLException;
 
 }

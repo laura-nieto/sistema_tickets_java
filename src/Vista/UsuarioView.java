@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -17,35 +18,37 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-import Entidades.Estadio;
+import Entidades.Usuario;
 import Excepciones.DatabaseException;
 import Excepciones.FormularioInvalidoException;
 import Excepciones.RegistroNotFoundExeption;
-import Persistencia.EstadioDB;
-import Servicio.EstadioServicio;
+import Excepciones.UsuarioExistenteException;
+import Persistencia.UsuarioDB;
+import Servicio.UsuarioServicio;
 
-public class EstadioView extends JPanel {
+
+public class UsuarioView extends JPanel{
 
     private AppView frame;
 
-    private EstadioServicio service;
+    private UsuarioServicio service;
 
     private CardLayout layout;
     private JPanel panelCards, panelLista, panelFormulario;
 
+    private JTextField txtNombre, txtApellido, txtDocumento, txtUsername, txtPassword;
+    private JCheckBox txtIsAdmin;
+
     private JTable tabla;
     private DefaultTableModel modelo;
-
-    private JTextField txtNombre, txtCapacidad, txtDireccion;
 
     private Boolean modoEdicion = false;
     private Integer idEdicion = -1;
 
-    public EstadioView(AppView frame) {
-
+    public UsuarioView(AppView frame) {
         this.frame = frame;
 
-        this.service = new EstadioServicio(new EstadioDB());
+        this.service = new UsuarioServicio(new UsuarioDB());
 
         layout = new CardLayout();
         panelCards = new JPanel(layout);
@@ -61,7 +64,6 @@ public class EstadioView extends JPanel {
 
         layout.show(panelCards, "lista");
     }
-
 
     private void crearVistaLista() {
         
@@ -88,7 +90,7 @@ public class EstadioView extends JPanel {
             if (fila >= 0) {
                 mostrarFormulario(true, fila);
             } else {
-                JOptionPane.showMessageDialog(this, "Seleccioná un estadio para editar", "Aviso", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Seleccioná un usuario para editar", "Aviso", JOptionPane.WARNING_MESSAGE);
             }
         });
 
@@ -96,14 +98,14 @@ public class EstadioView extends JPanel {
             Integer fila = tabla.getSelectedRow();
             if (fila >= 0) {
                 Integer id = (Integer) tabla.getValueAt(fila, 0);
-                borrarEstadio(id);
+                borrarUsuario(id);
             } else {
-                JOptionPane.showMessageDialog(this, "Seleccioná un estadio para borrar", "Aviso", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Seleccioná un usuario para borrar", "Aviso", JOptionPane.WARNING_MESSAGE);
             }
         });
         
         // Tabla
-        modelo = new DefaultTableModel(new Object[]{"ID", "Nombre", "Capacidad", "Dirección"}, 0);
+        modelo = new DefaultTableModel(new Object[]{"ID", "Nombre", "Apellido", "Documento", "Usuario", "Es administrador"}, 0);
         tabla = new JTable(modelo) {
             public boolean isCellEditable(int row, int col) {
                 return col == 4;
@@ -121,10 +123,10 @@ public class EstadioView extends JPanel {
         modelo.setRowCount(0);
 
         try {
-            List<Estadio> estadios = service.list();
+            List<Usuario> users = service.list();
 
-            for (Estadio estadio : estadios) {
-                modelo.addRow(new Object[]{estadio.getId(), estadio.getName(), estadio.getCapacity(), estadio.getAddres()});
+            for (Usuario user : users) {
+                modelo.addRow(new Object[]{user.getId(), user.getName(), user.getLastname(), user.getDocument(), user.getUsername(), user.getIsAdmin()});
             }
         } catch (DatabaseException e) {
             JOptionPane.showMessageDialog(this, "Ocurrió un error al cargar los datos. Por favor, intente nuevamente.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -132,26 +134,38 @@ public class EstadioView extends JPanel {
     }
 
     private void crearVistaFormulario() {
-        panelFormulario = new JPanel(new GridLayout(5, 2, 10, 10));
-        panelFormulario.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        panelFormulario = new JPanel(new GridLayout(7, 2, 10, 10));
+        panelFormulario.setBorder(BorderFactory.createEmptyBorder(30, 20, 30, 20));
 
         panelFormulario.add(new JLabel("Nombre:"));
         txtNombre = new JTextField();
         panelFormulario.add(txtNombre);
 
-        panelFormulario.add(new JLabel("Capacidad:"));
-        txtCapacidad = new JTextField();
-        panelFormulario.add(txtCapacidad);
+        panelFormulario.add(new JLabel("Apellido:"));
+        txtApellido = new JTextField();
+        panelFormulario.add(txtApellido);
 
-        panelFormulario.add(new JLabel("Dirección:"));
-        txtDireccion = new JTextField();
-        panelFormulario.add(txtDireccion);
+        panelFormulario.add(new JLabel("Documento:"));
+        txtDocumento = new JTextField();
+        panelFormulario.add(txtDocumento);
+
+        panelFormulario.add(new JLabel("Usuario:"));
+        txtUsername = new JTextField();
+        panelFormulario.add(txtUsername);
+
+        panelFormulario.add(new JLabel("Contraseña:"));
+        txtPassword = new JTextField();
+        panelFormulario.add(txtPassword);
+
+        panelFormulario.add(new JLabel());
+        txtIsAdmin = new JCheckBox("Administrador");
+        panelFormulario.add(txtIsAdmin);
 
         JButton btnGuardar = new JButton("Guardar");
         panelFormulario.add(btnGuardar);
         btnGuardar.addActionListener(e -> {
             try {
-                guardarEstadio();
+                guardarUsuario();
             } catch (FormularioInvalidoException ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(frame, "Uno de los campos es invalido.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -169,27 +183,31 @@ public class EstadioView extends JPanel {
         if (editar) {
 
             this.idEdicion = (Integer) tabla.getValueAt(id, 0);
-            Integer cap = (Integer) tabla.getValueAt(id, 2);
 
             txtNombre.setText((String) tabla.getValueAt(id, 1));
-            txtCapacidad.setText(cap.toString());
-            txtDireccion.setText((String) tabla.getValueAt(id, 3));
+            txtApellido.setText((String) tabla.getValueAt(id, 2));
+            txtDocumento.setText((String) tabla.getValueAt(id, 3));
+            txtUsername.setText((String) tabla.getValueAt(id, 4));
+            txtIsAdmin.setSelected((Boolean) tabla.getValueAt(id, 5));
         }
 
         layout.show(panelCards, "form");
     }
 
-    private void guardarEstadio() throws FormularioInvalidoException {
-        
+    private void guardarUsuario() throws FormularioInvalidoException {
+
         validarCampos();
 
         String nombre = txtNombre.getText();
-        Integer capacidad = Integer.valueOf(txtCapacidad.getText());
-        String direccion = txtDireccion.getText();
+        String apellido = txtApellido.getText();
+        String documento = txtDocumento.getText();
+        String username = txtUsername.getText();
+        String password = txtPassword.getText();
+        Boolean admin = txtIsAdmin.isSelected();
 
         if (modoEdicion && idEdicion >= 0) {
             try {
-                service.edit(idEdicion, nombre, capacidad, direccion);
+                service.edit(idEdicion, nombre, apellido, documento, username, password, admin);
             } catch (DatabaseException e) {
                 JOptionPane.showMessageDialog(frame, "Hubo un problema, reintente nuevamente.", "Error", JOptionPane.ERROR_MESSAGE);
             } catch (RegistroNotFoundExeption e) {
@@ -200,9 +218,11 @@ public class EstadioView extends JPanel {
             idEdicion = null;
         } else {
             try {
-                service.insert(nombre, capacidad, direccion);
+                service.insert(nombre, apellido, documento, username, password, admin);
             } catch (DatabaseException e) {
                 JOptionPane.showMessageDialog(frame, "Hubo un problema, reintente nuevamente.", "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (UsuarioExistenteException e) {
+                JOptionPane.showMessageDialog(frame, "Ya existe el usuario ingresado.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
 
@@ -212,29 +232,23 @@ public class EstadioView extends JPanel {
 
     private void validarCampos() throws FormularioInvalidoException {
 
-        String nombre = txtNombre.getText();
-        String capacidad = txtCapacidad.getText();
-        String direccion = txtDireccion.getText();
-        
-        if (nombre.isEmpty() || direccion.isEmpty() || capacidad.isEmpty()) {
+        String nombre    = txtNombre.getText();
+        String apellido  = txtApellido.getText();
+        String documento = txtDocumento.getText();
+        String username  = txtUsername.getText();
+        String password  = txtPassword.getText();
+
+        if (nombre.isEmpty() || apellido.isEmpty() || documento.isEmpty() || username.isEmpty()) {
             throw new FormularioInvalidoException();
         }
 
-        // Esto debo hacerlo por si ingresan letras dentro de capacidad
-        try {
-            Integer capacidadNum = Integer.valueOf(txtCapacidad.getText());
-            
-            if (capacidadNum <= 0) {
-                throw new FormularioInvalidoException();
-            }
-
-        } catch (NumberFormatException e) {
+        if (!modoEdicion && password.isEmpty()) {
             throw new FormularioInvalidoException();
         }
     }
 
-    private void borrarEstadio(int id) {
-        int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que deseas borrar este estadio?", "Confirmar", JOptionPane.YES_NO_OPTION);
+    private void borrarUsuario(int id) {
+        int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que deseas borrar este usuario?", "Confirmar", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             try {
                 service.delete(id);

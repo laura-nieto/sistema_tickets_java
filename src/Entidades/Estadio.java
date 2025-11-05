@@ -4,19 +4,18 @@ public class Estadio {
     private Integer id;
     private String name;
     private Integer capacity;
-    private String addres;
+    private String address;
     
-
     public Estadio (Integer id, String nombre, String direccion, Integer capacidad) {
         this.id       = id;
         this.name     = nombre;
-        this.addres   = direccion;
+        this.address   = direccion;
         this.capacity = capacidad;
     }
 
     public Estadio (String nombre, String direccion, Integer capacidad) {
         this.name     = nombre;
-        this.addres   = direccion;
+        this.address   = direccion;
         this.capacity = capacidad;
     }
     
@@ -41,7 +40,10 @@ public class Estadio {
     }
 
     public String getAddres() {
-        return addres;
+        return address;
     }
-   
+
+    public void setAddress(String addres) {
+        this.address = addres;
+    }
 }

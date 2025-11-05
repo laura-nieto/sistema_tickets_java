@@ -19,6 +19,24 @@ public abstract class Usuario {
         this.isAdmin  = isAdmin;
     }
 
+    public Usuario (String nombre, String apellido, String doc, String usuario, String contrasena, Boolean isAdmin) {
+        this.name     = nombre;
+        this.lastname = apellido;
+        this.document = doc;
+        this.username = usuario;
+        this.password = contrasena;
+        this.isAdmin  = isAdmin;
+    }
+
+    public Usuario (Integer id, String nombre, String apellido, String doc, String usuario, Boolean isAdmin) {
+        this.id       = id;
+        this.name     = nombre;
+        this.lastname = apellido;
+        this.document = doc;
+        this.username = usuario;
+        this.isAdmin  = isAdmin;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -45,5 +63,29 @@ public abstract class Usuario {
 
     public Boolean getIsAdmin() {
         return isAdmin;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public void setDocument(String document) {
+        this.document = document;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setIsAdmin(Boolean isAdmin) {
+        this.isAdmin = isAdmin;
     }
 }

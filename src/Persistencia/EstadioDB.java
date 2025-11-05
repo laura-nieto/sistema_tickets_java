@@ -12,26 +12,36 @@ import Excepciones.RegistroNotFoundExeption;
 public class EstadioDB extends BaseH2 implements ICrud<Estadio>{
 
     @Override
-    public void save(Estadio estadio) throws IOException, SQLException {
-		String sql = "INSERT INTO ESTADIOS (NAME, CAPACITY, ADDRESS) VALUES (?,?,?)";
-
-		updateDeleteInsertSql(sql, estadio.getName(), estadio.getCapacity(), estadio.getAddres());
+    public void save(Estadio estadio) throws SQLException {
+		String sql = "INSERT INTO estadios (name, capacity, address) VALUES (?,?,?)";
+        try {
+    		updateDeleteInsertSql(sql, estadio.getName(), estadio.getCapacity(), estadio.getAddres());        
+        } catch (SQLException e) {
+            throw e;
+        }
     }
 
     @Override
-    public Estadio get(Integer id) throws IOException, ClassNotFoundException, SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'get'");
+    public Estadio get(Integer id) throws IOException, ClassNotFoundException, SQLException, RegistroNotFoundExeption {
+		String sql = "SELECT id, name, address, capacity FROM estadios WHERE id = ?";
+		ResultSet rs = selectSql(sql, id);
+		if (rs.first()) {
+			Estadio p = new Estadio(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4));
+			cerrarConexion();
+			return p;
+		} else {
+			throw new RegistroNotFoundExeption();
+		}
     }
 
     @Override
-    public Estadio get(String column, String value) throws IOException, ClassNotFoundException, SQLException, RegistroNotFoundExeption {
+    public Estadio get(String sql, String value) throws IOException, ClassNotFoundException, SQLException {
         throw new UnsupportedOperationException("Unimplemented method 'get'");
     }
 
     @Override
     public List<Estadio> get() throws IOException, ClassNotFoundException, SQLException {
-		String sql = "SELECT ID, NAME, ADDRESS, CAPACITY FROM ESTADIOS";
+		String sql = "SELECT id, name, address, capacity FROM estadios";
 		ResultSet rs = super.selectSql(sql);
 		List<Estadio> estadios = new ArrayList<>();
 		while (rs.next()) {
@@ -42,15 +52,29 @@ public class EstadioDB extends BaseH2 implements ICrud<Estadio>{
     }
 
     @Override
-    public void update(Estadio t) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+    public void update(Estadio estadio) throws SQLException {
+		String sql = "UPDATE estadios SET name=?, capacity=?, address=? WHERE id = ?"; 
+		try {
+			Integer updated = updateDeleteInsertSql(sql, estadio.getName(), estadio.getCapacity(), estadio.getAddres(), estadio.getId());
+            if (updated != 1) {
+                throw new SQLException();
+            }
+		} catch (SQLException e) {
+			throw e;
+		}
     }
 
     @Override
-    public void delete(Estadio t) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'delete'");
+    public void delete(Estadio estadio) throws SQLException {
+		String sql = "DELETE FROM estadios WHERE id = ?"; 
+		try {
+			Integer updated = updateDeleteInsertSql(sql, estadio.getId());
+            if (updated != 1) {
+                throw new SQLException();
+            }
+		} catch (SQLException e) {
+			throw e;
+		}
     }
 
 }

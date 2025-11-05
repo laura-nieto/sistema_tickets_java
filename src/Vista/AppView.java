@@ -24,11 +24,15 @@ public class AppView extends JFrame {
         LoginView loginPanel = new LoginView(this);
         MainView principalPanel = new MainView();
         EstadioView estadioPanel = new EstadioView(this);
+        UsuarioView usuarioPanel = new UsuarioView(this);
+        EspectaculoView espectaculoPanel = new EspectaculoView(this);
 
         // Vista de pantallas
         mainPanel.add(loginPanel, "login");
         mainPanel.add(principalPanel, "principal");
         mainPanel.add(estadioPanel, "listado_estadios");
+        mainPanel.add(usuarioPanel, "listado_usuarios");
+        mainPanel.add(espectaculoPanel, "listado_espectaculos");
 
         borderMain.add(mainPanel);
         add(borderMain);
@@ -39,16 +43,19 @@ public class AppView extends JFrame {
         JMenuBar menuBar = new JMenuBar();
 
         if (isAdmin) {
-            JMenu menuEspectaculo = new JMenu("Espectaculos");
-            JMenu menuEstadio = new JMenu("Estadios");
-            JMenu menuUsuario = new JMenu("Usuarios");
             JMenu menuReportes = new JMenu("Reportes");
 
+            JMenu menuEstadio = new JMenu("Estadios");
             JMenuItem itemEstadio = new JMenuItem("Listado");
             itemEstadio.addActionListener(e -> cambiarVista("listado_estadios"));
 
+            JMenu menuEspectaculo = new JMenu("Espectaculos");
             JMenuItem itemEspectaculo = new JMenuItem("Listado");
+            itemEspectaculo.addActionListener(e -> cambiarVista("listado_espectaculos"));
+
+            JMenu menuUsuario = new JMenu("Usuarios");
             JMenuItem itemUsuario = new JMenuItem("Listado");
+            itemUsuario.addActionListener(e -> cambiarVista("listado_usuarios"));
 
             menuEstadio.add(itemEstadio);
             menuUsuario.add(itemUsuario);

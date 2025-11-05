@@ -25,6 +25,10 @@ public class LoginServicio {
 
             user = persistencia.get(sql, username);
 
+            if (user == null) {
+                throw new RegistroNotFoundExeption();
+            }
+
             if (!password.equals(user.getPassword())) {
                 throw new RegistroNotFoundExeption();
             }
@@ -32,8 +36,6 @@ public class LoginServicio {
         } catch (ClassNotFoundException | IOException | SQLException e) {
             e.printStackTrace();
             throw new DatabaseException();
-        } catch (RegistroNotFoundExeption e) {
-            throw e;
         }
 
         return user;

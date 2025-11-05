@@ -58,7 +58,7 @@ public abstract class BaseH2 {
 	
 	protected final int updateDeleteInsertSql(String sql, Object... params) throws SQLException {
 		PreparedStatement s;
-		int count =0;
+		int count = 0;
 		cargarDriver();
 		obtenerConexion();
 		try {
@@ -101,6 +101,7 @@ public abstract class BaseH2 {
 			else if (param instanceof String _param) s.setString(i++, _param);
 			else if (param instanceof Double _param) s.setDouble(i++, _param);
 			else if (param instanceof Long) s.setLong(i++, (Long) param);
+			else if (param instanceof Boolean _param) s.setBoolean(i++, _param);
 			//else if (param instanceof Timestamp) s.set(i++, (Timestamp) param);
 			else throw new IllegalArgumentException("Unexpected value: " + param);
 		}
