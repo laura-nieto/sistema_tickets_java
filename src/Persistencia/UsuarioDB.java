@@ -64,7 +64,7 @@ public class UsuarioDB extends BaseH2 implements ICrud<Usuario>{
     public void update(Usuario user) throws SQLException {
 		String sql = "UPDATE usuarios SET name=?, lastname=?, document=?, username=?, password=?, isAdmin=? WHERE id = ?"; 
 		try {
-			Integer updated = updateDeleteInsertSql(sql, user.getName(), user.getLastname(), user.getDocument(), user.getUsername(), user.getPassword(), user.getId());
+			Integer updated = updateDeleteInsertSql(sql, user.getName(), user.getLastname(), user.getDocument(), user.getUsername(), user.getPassword(), user.getIsAdmin(), user.getId());
             if (updated != 1) {
                 throw new SQLException();
             }
@@ -94,7 +94,7 @@ public class UsuarioDB extends BaseH2 implements ICrud<Usuario>{
         Usuario u = null;
 
 		if (rs.first()) {
-            if (rs.getBoolean(6)) {
+            if (rs.getBoolean(7)) {
                 u = new Administrador(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getBoolean(7));
             } else {
                 u = new Vendedor(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getBoolean(7));
