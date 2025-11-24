@@ -76,7 +76,10 @@ public class LoginView extends JPanel {
             }
 
             // Muestro mensaje
-            JOptionPane.showMessageDialog(frame, "Login exitoso", "Warning", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(frame, "Login exitoso", "Login", JOptionPane.INFORMATION_MESSAGE);
+
+            // Guardo Usuario que se logea
+            frame.setUsuarioLogeado(user);
 
             // Cambio de vista
             frame.cambiarVista("principal");

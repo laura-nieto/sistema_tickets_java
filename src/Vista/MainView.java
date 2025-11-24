@@ -1,13 +1,19 @@
 package Vista;
 
-import javax.swing.*;
 import java.awt.*;
 
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
 public class MainView extends JPanel {
-    public MainView() {
+    public MainView(AppView frame) {
 
         setLayout(new BorderLayout());
-        JLabel label = new JLabel("Bienvenido al sistema", SwingConstants.CENTER);
+
+        String msg = "Bienvenido al sistema";
+
+        JLabel label = new JLabel(msg, SwingConstants.CENTER);
 
         add(label, BorderLayout.CENTER);
     }

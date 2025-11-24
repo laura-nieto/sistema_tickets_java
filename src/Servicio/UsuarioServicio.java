@@ -13,17 +13,31 @@ import Excepciones.UsuarioExistenteException;
 import Persistencia.ICrud;
 
 public class UsuarioServicio {
+
     private ICrud<Usuario> persistencia;
 	
 	public UsuarioServicio(ICrud<Usuario> persistencia) {
 		this.persistencia = persistencia;
 	}
 
-    public List<Usuario> list() throws DatabaseException {
+    public Usuario get(Integer id) {
+
+        Usuario user = null;
+
+        try {
+            user = persistencia.get(id);
+        } catch (ClassNotFoundException | IOException | SQLException | RegistroNotFoundExeption e) {
+            e.printStackTrace();
+        }
+
+        return user;
+    }
+
+    public List<Usuario> list() throws DatabaseException, RegistroNotFoundExeption {
         List<Usuario> usuarios = null;
 
         try {
-            usuarios = persistencia.get();
+            usuarios = persistencia.getList();
         } catch (ClassNotFoundException | IOException | SQLException e) {
             e.printStackTrace();
             throw new DatabaseException();
@@ -32,7 +46,7 @@ public class UsuarioServicio {
         return usuarios;
     }
 
-    public void insert(String nombre, String apellido, String documento, String username, String password, Boolean isAdmin) throws DatabaseException, UsuarioExistenteException {
+    public void insert(String nombre, String apellido, String documento, String username, String password, Boolean isAdmin) throws DatabaseException, UsuarioExistenteException, RegistroNotFoundExeption {
         
         Usuario usuario = null;
         

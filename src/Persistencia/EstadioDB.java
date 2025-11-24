@@ -15,7 +15,7 @@ public class EstadioDB extends BaseH2 implements ICrud<Estadio>{
     public void save(Estadio estadio) throws SQLException {
 		String sql = "INSERT INTO estadios (name, capacity, address) VALUES (?,?,?)";
         try {
-    		updateDeleteInsertSql(sql, estadio.getName(), estadio.getCapacity(), estadio.getAddres());        
+    		updateDeleteInsertSql(sql, estadio.getName(), estadio.getCapacity(), estadio.getAddres());
         } catch (SQLException e) {
             throw e;
         }
@@ -35,12 +35,7 @@ public class EstadioDB extends BaseH2 implements ICrud<Estadio>{
     }
 
     @Override
-    public Estadio get(String sql, String value) throws IOException, ClassNotFoundException, SQLException {
-        throw new UnsupportedOperationException("Unimplemented method 'get'");
-    }
-
-    @Override
-    public List<Estadio> get() throws IOException, ClassNotFoundException, SQLException {
+    public List<Estadio> getList() throws IOException, ClassNotFoundException, SQLException {
 		String sql = "SELECT id, name, address, capacity FROM estadios";
 		ResultSet rs = super.selectSql(sql);
 		List<Estadio> estadios = new ArrayList<>();
@@ -76,5 +71,18 @@ public class EstadioDB extends BaseH2 implements ICrud<Estadio>{
 			throw e;
 		}
     }
+
+	@Override
+	public Estadio get(String sql, Object... params) throws IOException, ClassNotFoundException, SQLException {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'get'");
+	}
+
+	@Override
+	public List<Estadio> getList(String sql, Object... params)
+			throws SQLException, IOException, ClassNotFoundException {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'getList'");
+	}
 
 }

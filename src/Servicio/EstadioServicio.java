@@ -2,6 +2,8 @@ package Servicio;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import Entidades.Estadio;
@@ -29,12 +31,12 @@ public class EstadioServicio {
         return estadio;
     }
 
-    public List<Estadio> list() throws DatabaseException {
+    public List<Estadio> list() throws DatabaseException, RegistroNotFoundExeption {
 
         List<Estadio> estadios = null;
 
         try {
-            estadios = persistencia.get();
+            estadios = persistencia.getList();
         } catch (ClassNotFoundException | IOException | SQLException e) {
             e.printStackTrace();
             throw new DatabaseException();

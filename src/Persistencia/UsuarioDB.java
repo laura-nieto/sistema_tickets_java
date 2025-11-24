@@ -45,7 +45,7 @@ public class UsuarioDB extends BaseH2 implements ICrud<Usuario>{
     }
 
     @Override
-    public List<Usuario> get() throws SQLException {
+    public List<Usuario> getList() throws SQLException {
 		String sql = "SELECT id, name, lastname, document, username, isAdmin FROM usuarios";
 		ResultSet rs = super.selectSql(sql);
 		List<Usuario> usuarios = new ArrayList<>();
@@ -87,9 +87,9 @@ public class UsuarioDB extends BaseH2 implements ICrud<Usuario>{
     }
 
     @Override
-    public Usuario get(String sql, String value) throws IOException, ClassNotFoundException, SQLException {
+    public Usuario get(String sql, Object... params) throws IOException, ClassNotFoundException, SQLException {
 
-		ResultSet rs = selectSql(sql, value);
+		ResultSet rs = selectSql(sql, params);
 
         Usuario u = null;
 
@@ -103,6 +103,12 @@ public class UsuarioDB extends BaseH2 implements ICrud<Usuario>{
 
         cerrarConexion();
 		return u;
+    }
+
+    @Override
+    public List<Usuario> getList(String sql, Object... params) throws SQLException, IOException, ClassNotFoundException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getList'");
     }
 
 }

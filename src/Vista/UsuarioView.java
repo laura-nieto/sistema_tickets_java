@@ -128,7 +128,7 @@ public class UsuarioView extends JPanel{
             for (Usuario user : users) {
                 modelo.addRow(new Object[]{user.getId(), user.getName(), user.getLastname(), user.getDocument(), user.getUsername(), user.getIsAdmin()});
             }
-        } catch (DatabaseException e) {
+        } catch (DatabaseException | RegistroNotFoundExeption e) {
             JOptionPane.showMessageDialog(this, "Ocurrió un error al cargar los datos. Por favor, intente nuevamente.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -219,7 +219,7 @@ public class UsuarioView extends JPanel{
         } else {
             try {
                 service.insert(nombre, apellido, documento, username, password, admin);
-            } catch (DatabaseException e) {
+            } catch (DatabaseException | RegistroNotFoundExeption e) {
                 JOptionPane.showMessageDialog(frame, "Hubo un problema, reintente nuevamente.", "Error", JOptionPane.ERROR_MESSAGE);
             } catch (UsuarioExistenteException e) {
                 JOptionPane.showMessageDialog(frame, "Ya existe el usuario ingresado.", "Error", JOptionPane.ERROR_MESSAGE);

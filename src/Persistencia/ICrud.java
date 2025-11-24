@@ -12,9 +12,11 @@ public interface ICrud<T> {
 
 	public T get(Integer id) throws IOException, ClassNotFoundException, SQLException, RegistroNotFoundExeption;
 
-	public T get(String sql, String value) throws IOException, ClassNotFoundException, SQLException;
+	public T get(String sql, Object... params) throws IOException, ClassNotFoundException, SQLException, RegistroNotFoundExeption;
 
-	public List<T> get() throws SQLException, IOException, ClassNotFoundException;
+	public List<T> getList() throws SQLException, IOException, ClassNotFoundException, RegistroNotFoundExeption;
+
+	public List<T> getList(String sql, Object... params) throws SQLException, IOException, ClassNotFoundException, RegistroNotFoundExeption;
 
 	public void update(T t) throws SQLException;
 

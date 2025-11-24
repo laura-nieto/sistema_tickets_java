@@ -1,4 +1,5 @@
 package Entidades;
+
 public class Estadio {
     
     private Integer id;

@@ -1,5 +1,7 @@
 package Entidades;
+
 import java.sql.Timestamp;
+import java.util.List;
 
 public class Espectaculo {
     private Integer id;
@@ -7,7 +9,7 @@ public class Espectaculo {
     private Estadio estadio;
     private Timestamp timestamp;
     private Double price;
-    // lista de tickets? 
+    private List<Entrada> entradas;
 
     public Espectaculo (String nombre, Estadio estadio, Timestamp fechaHora, double precio) {
         this.name    = nombre;
@@ -58,6 +60,19 @@ public class Espectaculo {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public void setEntradas(List<Entrada> entradas) {
+        this.entradas = entradas;
+    }
+
+    public Integer espacioRestante() {
+
+        Integer cantEntradas = this.entradas.size();
+
+        Integer espacio = this.estadio.getCapacity();
+
+        return espacio - cantEntradas;
     }
 
 }

@@ -102,7 +102,7 @@ public abstract class BaseH2 {
 			else if (param instanceof Double _param) s.setDouble(i++, _param);
 			else if (param instanceof Long) s.setLong(i++, (Long) param);
 			else if (param instanceof Boolean _param) s.setBoolean(i++, _param);
-			//else if (param instanceof Timestamp) s.set(i++, (Timestamp) param);
+			else if (param instanceof Timestamp _param) s.setTimestamp(i++, _param);
 			else throw new IllegalArgumentException("Unexpected value: " + param);
 		}
 		return s;

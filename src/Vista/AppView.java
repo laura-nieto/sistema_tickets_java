@@ -1,14 +1,23 @@
 package Vista;
 
-import javax.swing.*;
-
 import java.awt.*;
+
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+
+import Entidades.Usuario;
 
 public class AppView extends JFrame {
 
     private CardLayout cardLayout;
 
     private JPanel mainPanel;
+
+    private Usuario usuarioLogeado;
 
     public AppView() {
         setTitle("Ticket Up");
@@ -22,10 +31,11 @@ public class AppView extends JFrame {
         mainPanel = new JPanel(cardLayout);
 
         LoginView loginPanel = new LoginView(this);
-        MainView principalPanel = new MainView();
+        MainView principalPanel = new MainView(this);
         EstadioView estadioPanel = new EstadioView(this);
         UsuarioView usuarioPanel = new UsuarioView(this);
         EspectaculoView espectaculoPanel = new EspectaculoView(this);
+        VentaView ventaView = new VentaView(this);
 
         // Vista de pantallas
         mainPanel.add(loginPanel, "login");
@@ -33,6 +43,7 @@ public class AppView extends JFrame {
         mainPanel.add(estadioPanel, "listado_estadios");
         mainPanel.add(usuarioPanel, "listado_usuarios");
         mainPanel.add(espectaculoPanel, "listado_espectaculos");
+        mainPanel.add(ventaView, "venta");
 
         borderMain.add(mainPanel);
         add(borderMain);
@@ -65,9 +76,25 @@ public class AppView extends JFrame {
             menuBar.add(menuEstadio);
             menuBar.add(menuUsuario);
             menuBar.add(menuReportes);
+
+
+            // Porque me molesta tener que cerrar sesion para revisar la db
+
+            JMenu menuVenta = new JMenu("Venta");
+            JMenuItem itemVenta = new JMenuItem("Listado");
+
+            itemVenta.addActionListener(e -> cambiarVista("venta"));
+
+            menuVenta.add(itemVenta);
+            menuBar.add(menuVenta);
+
         } else {
             JMenu menuVenta = new JMenu("Venta");
+            JMenuItem itemVenta = new JMenuItem("Listado");
 
+            itemVenta.addActionListener(e -> cambiarVista("venta"));
+
+            menuVenta.add(itemVenta);
             menuBar.add(menuVenta);
         }
 
@@ -78,5 +105,13 @@ public class AppView extends JFrame {
 
     public void cambiarVista(String nombrePantalla) {
         cardLayout.show(mainPanel, nombrePantalla);
+    }
+
+    public Usuario getUsuarioLogeado() {
+        return usuarioLogeado;
+    }
+
+    public void setUsuarioLogeado(Usuario usuarioLogeado) {
+        this.usuarioLogeado = usuarioLogeado;
     }
 }

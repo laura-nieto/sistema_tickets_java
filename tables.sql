@@ -26,9 +26,23 @@ CREATE TABLE espectaculos (
         FOREIGN KEY (estadio_id) REFERENCES estadios(id)
 );
 
+CREATE TABLE entradas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    document VARCHAR(50) NOT NULL,
+    buyer_name VARCHAR(100) NOT NULL,
+    espectaculo_id INT NOT NULL,
+    vendedor INT NOT NULL,
+    soldAt TIMESTAMP NOT NULL,
+    
+    CONSTRAINT fk_entrada_espectaculo
+        FOREIGN KEY (espectaculo_id) REFERENCES espectaculos(id),
+
+    CONSTRAINT fk_entrada_vendedor
+        FOREIGN KEY (vendedor) REFERENCES usuarios(id)
+);
+
 INSERT INTO usuarios (name, lastname, document, username, password, isAdmin)
 VALUES ('Laura', 'Nieto', '12345678', 'lnieto', '1234', TRUE);
-
-
+    
 INSERT INTO ESTADIOS (NAME, CAPACITY, ADDRESS) 
 VALUES ('Luna Park', 8400, 'Av. Eduardo Madero 470');

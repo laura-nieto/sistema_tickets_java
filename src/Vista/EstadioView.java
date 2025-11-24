@@ -126,7 +126,7 @@ public class EstadioView extends JPanel {
             for (Estadio estadio : estadios) {
                 modelo.addRow(new Object[]{estadio.getId(), estadio.getName(), estadio.getCapacity(), estadio.getAddres()});
             }
-        } catch (DatabaseException e) {
+        } catch (DatabaseException | RegistroNotFoundExeption e) {
             JOptionPane.showMessageDialog(this, "Ocurrió un error al cargar los datos. Por favor, intente nuevamente.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
