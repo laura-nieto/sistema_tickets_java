@@ -2,8 +2,6 @@ package Servicio;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import Entidades.Estadio;
@@ -76,7 +74,10 @@ public class EstadioServicio {
     public void delete(Integer id) throws RegistroNotFoundExeption, DatabaseException {
         try {
             Estadio estadio = persistencia.get(id);
-            persistencia.delete(estadio);
+
+            if (estadio != null) {   
+                persistencia.delete(estadio);
+            }
 
         } catch (ClassNotFoundException | IOException | SQLException e) {
             e.printStackTrace();

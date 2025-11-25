@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Entidades.Estadio;
+import Entidades.Ubicacion;
 import Excepciones.RegistroNotFoundExeption;
 
 public class EstadioDB extends BaseH2 implements ICrud<Estadio>{
@@ -26,9 +27,21 @@ public class EstadioDB extends BaseH2 implements ICrud<Estadio>{
 		String sql = "SELECT id, name, address, capacity FROM estadios WHERE id = ?";
 		ResultSet rs = selectSql(sql, id);
 		if (rs.first()) {
-			Estadio p = new Estadio(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4));
+			Estadio est = new Estadio(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4));
+			
+			// Cargo ubicaciones del estadio
+			String sqlUb = "SELECT id, nombre, capacidad, precio FROM estadio_ubicaciones WHERE estadio_id = ?";
+			ResultSet rsUb = selectSql(sqlUb, id);
+
+			List<Ubicacion> ubicaciones = new ArrayList<>();
+			while (rsUb.next()) {
+				ubicaciones.add(new Ubicacion(rsUb.getInt(1), rsUb.getString(2), rsUb.getInt(3), rsUb.getDouble(4), est));
+			}
+
+        	est.setUbicaciones(ubicaciones);
+			
 			cerrarConexion();
-			return p;
+			return est;
 		} else {
 			throw new RegistroNotFoundExeption();
 		}

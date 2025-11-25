@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -19,12 +20,14 @@ import javax.swing.table.DefaultTableModel;
 
 import Entidades.Entrada;
 import Entidades.Espectaculo;
+import Entidades.Ubicacion;
 import Excepciones.DatabaseException;
 import Excepciones.EspacioRestanteException;
 import Excepciones.FormularioInvalidoException;
 import Excepciones.RegistroNotFoundExeption;
 import Persistencia.EntradaDB;
 import Persistencia.EspectaculosDB;
+import Persistencia.UbicacionDB;
 import Servicio.VentaServicio;
 
 public class VentaView extends JPanel{
@@ -40,13 +43,14 @@ public class VentaView extends JPanel{
     private DefaultTableModel modelo;
 
     private JTextField txtNombre, txtDoc;
+    private JComboBox<ComboItem> txtUbicacion = new JComboBox<>();
 
     private Integer idEspectaculoElegido = -1;
 
     public VentaView(AppView frame){
         this.frame = frame;
 
-        this.service = new VentaServicio(new EntradaDB(), new EspectaculosDB());
+        this.service = new VentaServicio(new EntradaDB(), new EspectaculosDB(), new UbicacionDB());
 
         layout = new CardLayout();
         panelCards = new JPanel(layout);
@@ -81,15 +85,25 @@ public class VentaView extends JPanel{
         btnVenta.addActionListener(e -> {
             Integer fila = tabla.getSelectedRow();
             if (fila >= 0) {
-                mostrarFormulario(fila);
+                try {
+                    Espectaculo espectaculo = getEspectaculoSeleccionado();
+
+                    crearComboBox(espectaculo.getEstadio().getId());
+
+                    mostrarFormulario(fila);
+                } catch (DatabaseException e1) {
+                    JOptionPane.showMessageDialog(this, "Ocurrió un error al cargar los datos. Por favor, intente nuevamente.", "Error", JOptionPane.ERROR_MESSAGE);
+                } catch (RegistroNotFoundExeption e1) {
+                    JOptionPane.showMessageDialog(this, "Ocurrió un error al cargar los datos. Por favor, intente nuevamente.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             } else {
-                JOptionPane.showMessageDialog(this, "Seleccioná un espectaculo para editar", "Aviso", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Seleccioná un espectaculo para realizar la venta", "Aviso", JOptionPane.WARNING_MESSAGE);
             }
         });
 
         
         // Tabla
-        modelo = new DefaultTableModel(new Object[]{"ID", "Nombre", "Fecha", "Precio", "Estadio", "Disponible"}, 0);
+        modelo = new DefaultTableModel(new Object[]{"ID", "Nombre", "Fecha", "Estadio", "Disponible"}, 0);
         tabla = new JTable(modelo) {
             public boolean isCellEditable(int row, int col) {
                 return col == 5;
@@ -110,7 +124,8 @@ public class VentaView extends JPanel{
             List<Espectaculo> espectaculos = service.listEspectaculos();
 
             for (Espectaculo espectaculo : espectaculos) {
-                modelo.addRow(new Object[]{espectaculo.getId(), espectaculo.getName(), espectaculo.getTimestamp(), espectaculo.getPrice(), espectaculo.getEstadio().getName(), espectaculo.espacioRestante()});
+
+                modelo.addRow(new Object[]{espectaculo.getId(), espectaculo.getName(), espectaculo.getTimestamp(), espectaculo.getEstadio().getName(), espectaculo.espacioRestante()});
             }
         } catch (DatabaseException | RegistroNotFoundExeption e) {
             JOptionPane.showMessageDialog(this, "Ocurrió un error al cargar los datos. Por favor, intente nuevamente.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -129,6 +144,10 @@ public class VentaView extends JPanel{
         txtDoc = new JTextField();
         panelFormulario.add(txtDoc);
 
+        panelFormulario.add(new JLabel("Ubicacion:"));
+        txtUbicacion = new JComboBox<>();
+        panelFormulario.add(txtUbicacion);
+
         JButton btnGuardar = new JButton("Guardar");
         panelFormulario.add(btnGuardar);
         btnGuardar.addActionListener(e -> {
@@ -144,6 +163,27 @@ public class VentaView extends JPanel{
         JButton btnCancelar = new JButton("Cancelar");
         panelFormulario.add(btnCancelar);
         btnCancelar.addActionListener(e -> layout.show(panelCards, "lista"));   
+    }
+
+    private void crearComboBox(Integer estadioId) {
+
+        try {
+            List<Ubicacion> ubicaciones = this.service.listUbicaciones(estadioId);
+
+            txtUbicacion.removeAllItems();
+
+            for (Ubicacion ubicacion : ubicaciones) {
+
+                String label = ubicacion.getNombre() + " - $" + ubicacion.getPrecio();
+
+                txtUbicacion.addItem(new ComboItem(ubicacion.getId(), label));
+            }
+
+        } catch (RegistroNotFoundExeption e) {
+            JOptionPane.showMessageDialog(frame, "No se encontraron ubicaciones.", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (DatabaseException e) {
+            JOptionPane.showMessageDialog(frame, "Hubo un problema, reintente nuevamente.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void realizarVenta() throws FormularioInvalidoException, RegistroNotFoundExeption {
@@ -183,5 +223,18 @@ public class VentaView extends JPanel{
         if (nombre.isEmpty() || documento.isEmpty()) {
             throw new FormularioInvalidoException();
         }
+    }
+
+    private Espectaculo getEspectaculoSeleccionado() throws DatabaseException, RegistroNotFoundExeption {
+        int fila = tabla.getSelectedRow();
+
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione un espectáculo.", "Error", JOptionPane.WARNING_MESSAGE);
+            return null;
+        }
+
+        int id = (int) modelo.getValueAt(fila, 0);
+
+        return this.service.getEspectaculo(id);
     }
 }

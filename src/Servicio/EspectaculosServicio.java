@@ -45,10 +45,10 @@ public class EspectaculosServicio {
         return espectaculos;
     }
 
-    public void insert(String nombre, Estadio estadio, Timestamp fecha, double precio) throws DatabaseException{
+    public void insert(String nombre, Estadio estadio, Timestamp fecha) throws DatabaseException{
 
         try {
-            Espectaculo espectaculo = new Espectaculo(nombre, estadio, fecha, precio);
+            Espectaculo espectaculo = new Espectaculo(nombre, estadio, fecha);
 
             persistencia.save(espectaculo);
         } catch (SQLException e) {
@@ -57,14 +57,13 @@ public class EspectaculosServicio {
         }
     }
 
-    public void edit(Integer id, String nombre, Estadio estadio, Timestamp timestamp, double precio) throws DatabaseException, RegistroNotFoundExeption {
+    public void edit(Integer id, String nombre, Estadio estadio, Timestamp timestamp) throws DatabaseException, RegistroNotFoundExeption {
         try {
             Espectaculo espectaculo = persistencia.get(id);
 
             espectaculo.setName(nombre);
             espectaculo.setEstadio(estadio);
             espectaculo.setTimestamp(timestamp);
-            espectaculo.setPrice(precio);
 
             persistencia.update(espectaculo);
 

@@ -5,10 +5,6 @@ import java.awt.CardLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -22,22 +18,22 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-import Entidades.Espectaculo;
 import Entidades.Estadio;
+import Entidades.Ubicacion;
 import Excepciones.DatabaseException;
 import Excepciones.FormularioInvalidoException;
 import Excepciones.RegistroNotFoundExeption;
-import Persistencia.EspectaculosDB;
 import Persistencia.EstadioDB;
-import Servicio.EspectaculosServicio;
+import Persistencia.UbicacionDB;
 import Servicio.EstadioServicio;
+import Servicio.UbicacionServicio;
 
-public class EspectaculoView extends JPanel {
+public class UbicacionView extends JPanel {
 
     private AppView frame;
 
-    private EspectaculosServicio service;
-    private EstadioServicio serviceEstadio; // Lo necesito para traer la data
+    private UbicacionServicio service;
+    private EstadioServicio serviceEstadio;
 
     private CardLayout layout;
     private JPanel panelCards, panelLista, panelFormulario;
@@ -45,17 +41,17 @@ public class EspectaculoView extends JPanel {
     private JTable tabla;
     private DefaultTableModel modelo;
 
-    private JTextField txtNombre, txtFecha;
+    private JTextField txtNombre, txtPrecio, txtCapacidad;
     private JComboBox<ComboItem> txtEstadio = new JComboBox<>();
 
     private Boolean modoEdicion = false;
     private Integer idEdicion = -1;
 
+    public UbicacionView(AppView frame) {
 
-    public EspectaculoView(AppView frame) {
         this.frame = frame;
 
-        this.service = new EspectaculosServicio(new EspectaculosDB());
+        this.service = new UbicacionServicio(new UbicacionDB());
         this.serviceEstadio = new EstadioServicio(new EstadioDB());
 
         layout = new CardLayout();
@@ -98,7 +94,7 @@ public class EspectaculoView extends JPanel {
             if (fila >= 0) {
                 mostrarFormulario(true, fila);
             } else {
-                JOptionPane.showMessageDialog(this, "Seleccioná un espectaculo para editar", "Aviso", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Seleccioná un ubicacion para editar", "Aviso", JOptionPane.WARNING_MESSAGE);
             }
         });
 
@@ -106,14 +102,14 @@ public class EspectaculoView extends JPanel {
             Integer fila = tabla.getSelectedRow();
             if (fila >= 0) {
                 Integer id = (Integer) tabla.getValueAt(fila, 0);
-                borrarEspectaculo(id);
+                borrarUbicacion(id);
             } else {
-                JOptionPane.showMessageDialog(this, "Seleccioná un espectaculo para borrar", "Aviso", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Seleccioná una ubicacion para borrar", "Aviso", JOptionPane.WARNING_MESSAGE);
             }
         });
         
         // Tabla
-        modelo = new DefaultTableModel(new Object[]{"ID", "Nombre", "Fecha", "Estadio"}, 0);
+        modelo = new DefaultTableModel(new Object[]{"ID", "Nombre", "Capacidad", "Precio", "Estadio"}, 0);
         tabla = new JTable(modelo) {
             public boolean isCellEditable(int row, int col) {
                 return col == 5;
@@ -131,10 +127,10 @@ public class EspectaculoView extends JPanel {
         modelo.setRowCount(0);
 
         try {
-            List<Espectaculo> espectaculos = service.list();
+            List<Ubicacion> ubicaciones = service.list();
 
-            for (Espectaculo espectaculo : espectaculos) {
-                modelo.addRow(new Object[]{espectaculo.getId(), espectaculo.getName(), espectaculo.getTimestamp(), espectaculo.getEstadio().getName()});
+            for (Ubicacion ubicacion : ubicaciones) {
+                modelo.addRow(new Object[]{ubicacion.getId(), ubicacion.getNombre(), ubicacion.getCapacidad(), ubicacion.getPrecio(), ubicacion.getEstadio().getName()});
             }
         } catch (DatabaseException | RegistroNotFoundExeption e) {
             JOptionPane.showMessageDialog(this, "Ocurrió un error al cargar los datos. Por favor, intente nuevamente.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -149,9 +145,13 @@ public class EspectaculoView extends JPanel {
         txtNombre = new JTextField();
         panelFormulario.add(txtNombre);
 
-        panelFormulario.add(new JLabel("Fecha:"));
-        txtFecha = new JTextField();
-        panelFormulario.add(txtFecha);
+        panelFormulario.add(new JLabel("Capacidad:"));
+        txtCapacidad = new JTextField();
+        panelFormulario.add(txtCapacidad);
+
+        panelFormulario.add(new JLabel("Precio:"));
+        txtPrecio = new JTextField();
+        panelFormulario.add(txtPrecio);
 
         panelFormulario.add(new JLabel("Estadio:"));
         crearComboBox();
@@ -161,7 +161,7 @@ public class EspectaculoView extends JPanel {
         panelFormulario.add(btnGuardar);
         btnGuardar.addActionListener(e -> {
             try {
-                guardarEspectaculo();
+                guardarUbicacion();
             } catch (FormularioInvalidoException ex) {
                 JOptionPane.showMessageDialog(frame, "Uno de los campos es invalido.", "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -195,7 +195,8 @@ public class EspectaculoView extends JPanel {
             this.idEdicion = (Integer) tabla.getValueAt(id, 0);
 
             txtNombre.setText((String) tabla.getValueAt(id, 1));
-            txtFecha.setText(tabla.getValueAt(id, 2).toString());
+            txtCapacidad.setText(tabla.getValueAt(id, 2).toString());
+            txtPrecio.setText(tabla.getValueAt(id, 3).toString());
 
             for (int i = 0; i < txtEstadio.getItemCount(); i++) {
                 ComboItem item = (ComboItem) txtEstadio.getItemAt(i);
@@ -210,35 +211,30 @@ public class EspectaculoView extends JPanel {
         layout.show(panelCards, "form");
     }
 
-    private void guardarEspectaculo() throws FormularioInvalidoException {
+    private void guardarUbicacion() throws FormularioInvalidoException {
         
         validarCampos();
 
         String nombre = txtNombre.getText();
+        Double precio = Double.valueOf(txtPrecio.getText());
+        Integer capacidad = Integer.valueOf(txtCapacidad.getText());
 
         ComboItem item = (ComboItem) txtEstadio.getSelectedItem();
         Integer idEstadio = item.getValue();
 
         try {
-            // Formateo Fecha - Dentro del try porque me tira excepcion sdf.parse
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-            sdf.setLenient(false); // fuerza formato exacto
-            Date fechaDate = sdf.parse(txtFecha.getText());
-            Timestamp fechaTime = new Timestamp(fechaDate.getTime());
 
             // Obtengo el estadio
             Estadio estadio = serviceEstadio.get(idEstadio);
 
             if (modoEdicion && idEdicion >= 0) {
-                service.edit(idEdicion, nombre, estadio, fechaTime);
+                service.edit(idEdicion, nombre, precio, capacidad, estadio);
 
                 modoEdicion = false;
                 idEdicion = null;
             } else {
-                service.insert(nombre, estadio, fechaTime);
+                service.insert(nombre, estadio, precio, capacidad);
             }
-        } catch (ParseException e) {
-            JOptionPane.showMessageDialog(frame, "El formato de la fecha es incorrecto.", "Error", JOptionPane.ERROR_MESSAGE);
         } catch (DatabaseException e) {
             JOptionPane.showMessageDialog(frame, "Hubo un problema, reintente nuevamente.", "Error", JOptionPane.ERROR_MESSAGE);
         } catch (RegistroNotFoundExeption e) {
@@ -252,36 +248,29 @@ public class EspectaculoView extends JPanel {
     private void validarCampos() throws FormularioInvalidoException {
         
         String nombre = txtNombre.getText();
-        String fecha  =  txtFecha.getText();
         
-        if (nombre.isEmpty() || fecha.isEmpty()) {
+        if (nombre.isEmpty()) {
             throw new FormularioInvalidoException();
         }
 
+        // Valido precio y capacidad
         try {
            
-            // Valido fecha
-            String fechaIngresada = txtFecha.getText().trim();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-            sdf.setLenient(false); // fuerza formato exacto
-            Date fechaDate = sdf.parse(fechaIngresada);
+            Integer capacidad  =  Integer.valueOf(txtCapacidad.getText());
+            Double precio  =  Double.valueOf(txtPrecio.getText());
 
-            Timestamp fechaTime = new Timestamp(fechaDate.getTime());
-            Timestamp ahora = new Timestamp(System.currentTimeMillis());
-
-            if (fechaTime.before(ahora)) {
-                System.out.println("La fecha ingresada debe ser posterior al dia de hoy");
+            if (capacidad <= 0 || precio < 0) {
                 throw new FormularioInvalidoException();
             }
 
-        } catch (ParseException e) {
+        } catch (NumberFormatException e) {
             e.printStackTrace();
             throw new FormularioInvalidoException();
         }
     }
 
-    private void borrarEspectaculo(int id) {
-        int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que deseas borrar este espectaculo?", "Confirmar", JOptionPane.YES_NO_OPTION);
+    private void borrarUbicacion(int id) {
+        int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que deseas borrar esta ubicacion?", "Confirmar", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             try {
                 service.delete(id);

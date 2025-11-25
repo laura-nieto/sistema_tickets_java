@@ -33,6 +33,7 @@ public class AppView extends JFrame {
         LoginView loginPanel = new LoginView(this);
         MainView principalPanel = new MainView(this);
         EstadioView estadioPanel = new EstadioView(this);
+        UbicacionView ubicacionPanel = new UbicacionView(this);
         UsuarioView usuarioPanel = new UsuarioView(this);
         EspectaculoView espectaculoPanel = new EspectaculoView(this);
         VentaView ventaView = new VentaView(this);
@@ -41,6 +42,7 @@ public class AppView extends JFrame {
         mainPanel.add(loginPanel, "login");
         mainPanel.add(principalPanel, "principal");
         mainPanel.add(estadioPanel, "listado_estadios");
+        mainPanel.add(ubicacionPanel, "listado_ubicaciones");
         mainPanel.add(usuarioPanel, "listado_usuarios");
         mainPanel.add(espectaculoPanel, "listado_espectaculos");
         mainPanel.add(ventaView, "venta");
@@ -57,8 +59,10 @@ public class AppView extends JFrame {
             JMenu menuReportes = new JMenu("Reportes");
 
             JMenu menuEstadio = new JMenu("Estadios");
-            JMenuItem itemEstadio = new JMenuItem("Listado");
+            JMenuItem itemEstadio = new JMenuItem("Listado Estadio");
+            JMenuItem itemUbicacion = new JMenuItem("Ubicaciones");
             itemEstadio.addActionListener(e -> cambiarVista("listado_estadios"));
+            itemUbicacion.addActionListener(e -> cambiarVista("listado_ubicaciones"));
 
             JMenu menuEspectaculo = new JMenu("Espectaculos");
             JMenuItem itemEspectaculo = new JMenuItem("Listado");
@@ -69,6 +73,7 @@ public class AppView extends JFrame {
             itemUsuario.addActionListener(e -> cambiarVista("listado_usuarios"));
 
             menuEstadio.add(itemEstadio);
+            menuEstadio.add(itemUbicacion);
             menuUsuario.add(itemUsuario);
             menuEspectaculo.add(itemEspectaculo);
 

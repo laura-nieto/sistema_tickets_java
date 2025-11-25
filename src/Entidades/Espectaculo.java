@@ -8,22 +8,19 @@ public class Espectaculo {
     private String name;
     private Estadio estadio;
     private Timestamp timestamp;
-    private Double price;
     private List<Entrada> entradas;
 
-    public Espectaculo (String nombre, Estadio estadio, Timestamp fechaHora, double precio) {
+    public Espectaculo (String nombre, Estadio estadio, Timestamp fechaHora) {
         this.name    = nombre;
         this.estadio = estadio;
         this.timestamp = fechaHora;
-        this.price = precio;
     }
 
-    public Espectaculo (Integer id, String nombre, Estadio estadio, Timestamp fechaHora, double precio) {
+    public Espectaculo (Integer id, String nombre, Estadio estadio, Timestamp fechaHora) {
         this.id = id;
         this.name    = nombre;
         this.estadio = estadio;
         this.timestamp = fechaHora;
-        this.price = precio;
     }
 
     public Integer getId() {
@@ -42,10 +39,6 @@ public class Espectaculo {
         return timestamp;
     }
 
-    public double getPrice() {
-        return price;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -56,10 +49,6 @@ public class Espectaculo {
 
     public void setTimestamp(Timestamp timestamp) {
         this.timestamp = timestamp;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
     }
 
     public void setEntradas(List<Entrada> entradas) {

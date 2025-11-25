@@ -8,6 +8,7 @@ import java.util.List;
 
 import Entidades.Entrada;
 import Entidades.Espectaculo;
+import Entidades.Ubicacion;
 import Entidades.Usuario;
 import Excepciones.RegistroNotFoundExeption;
 
@@ -15,7 +16,7 @@ public class EntradaDB extends BaseH2 implements ICrud<Entrada>{
 
     @Override
     public void save(Entrada entrada) throws SQLException {
-		String sql = "INSERT INTO entradas (document, buyer_name, espectaculo_id, vendedor, soldAt) VALUES (?,?,?,?,?)";
+		String sql = "INSERT INTO entradas (buyer_document, buyer_name, espectaculo_id, ubicacion_id, vendedor_id, soldAt) VALUES (?,?,?,?,?,?)";
         try {
     		updateDeleteInsertSql(sql, entrada.getDocument(), entrada.getBuyerName(), entrada.getEspectaculo().getId(), entrada.getVendedor().getId(), entrada.getSoldAt());
         } catch (SQLException e) {
@@ -66,8 +67,11 @@ public class EntradaDB extends BaseH2 implements ICrud<Entrada>{
             UsuarioDB usuarioDB = new UsuarioDB();
             Usuario user = usuarioDB.get(rs.getInt(5));
 
-            if (espectaculo != null) {
-                entradas.add(new Entrada(rs.getInt(1), rs.getString(2), rs.getString(3) , espectaculo, user ,rs.getTimestamp(6)));
+            UbicacionDB ubicacionDB = new UbicacionDB();
+            Ubicacion ubicacion = ubicacionDB.get(5);
+
+            if (espectaculo != null && user != null) {
+                entradas.add(new Entrada(rs.getInt(1), rs.getString(2), rs.getString(3), espectaculo, user, rs.getTimestamp(6), ubicacion));
             }
         }
         cerrarConexion();

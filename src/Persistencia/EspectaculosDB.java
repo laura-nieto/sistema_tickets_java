@@ -14,9 +14,9 @@ public class EspectaculosDB extends BaseH2 implements ICrud<Espectaculo> {
 
     @Override
     public void save(Espectaculo espectaculo) throws SQLException {
-        String sql = "INSERT INTO espectaculos (name, estadio_id, timestamp, price) VALUES (?,?,?,?)";
+        String sql = "INSERT INTO espectaculos (name, estadio_id, timestamp) VALUES (?,?,?)";
         try {
-            updateDeleteInsertSql(sql, espectaculo.getName(), espectaculo.getEstadio().getId(), espectaculo.getTimestamp(),espectaculo.getPrice());
+            updateDeleteInsertSql(sql, espectaculo.getName(), espectaculo.getEstadio().getId(), espectaculo.getTimestamp());
         } catch (SQLException e) {
             throw e;
         }
@@ -24,7 +24,7 @@ public class EspectaculosDB extends BaseH2 implements ICrud<Espectaculo> {
 
     @Override
     public Espectaculo get(Integer id) throws IOException, ClassNotFoundException, SQLException, RegistroNotFoundExeption {
-        String sql = "SELECT id, name, estadio_id, timestamp, price FROM espectaculos WHERE id = ?";
+        String sql = "SELECT id, name, estadio_id, timestamp FROM espectaculos WHERE id = ?";
         ResultSet rs = selectSql(sql, id);
         if (rs.first()) {
             // Obtengo id del estadio
@@ -32,7 +32,7 @@ public class EspectaculosDB extends BaseH2 implements ICrud<Espectaculo> {
             EstadioDB estadioDB = new EstadioDB();
             Estadio estadio = estadioDB.get(estadioId);
 
-            Espectaculo esp = new Espectaculo(rs.getInt(1), rs.getString(2), estadio, rs.getTimestamp(4), rs.getDouble(5));
+            Espectaculo esp = new Espectaculo(rs.getInt(1), rs.getString(2), estadio, rs.getTimestamp(4));
             cerrarConexion();
             return esp;
         } else {
@@ -42,7 +42,7 @@ public class EspectaculosDB extends BaseH2 implements ICrud<Espectaculo> {
 
     @Override
     public List<Espectaculo> getList() throws SQLException, IOException, ClassNotFoundException, RegistroNotFoundExeption {
-        String sql = "SELECT id, name, estadio_id, timestamp, price FROM espectaculos";
+        String sql = "SELECT id, name, estadio_id, timestamp FROM espectaculos";
         ResultSet rs = super.selectSql(sql);
         List<Espectaculo> espectaculos = new ArrayList<>();
         while (rs.next()) {
@@ -51,7 +51,7 @@ public class EspectaculosDB extends BaseH2 implements ICrud<Espectaculo> {
             Estadio estadio = estadioDB.get(rs.getInt(3));
 
             if (estadio != null) {
-                espectaculos.add(new Espectaculo(rs.getInt(1), rs.getString(2), estadio, rs.getTimestamp(4), rs.getDouble(5)));
+                espectaculos.add(new Espectaculo(rs.getInt(1), rs.getString(2), estadio, rs.getTimestamp(4)));
             }
         }
         cerrarConexion();
@@ -60,10 +60,9 @@ public class EspectaculosDB extends BaseH2 implements ICrud<Espectaculo> {
 
     @Override
     public void update(Espectaculo esp) throws SQLException {
-        String sql = "UPDATE espectaculos SET name=?, estadio_id=?, timestamp=?, price=? WHERE id = ?";
+        String sql = "UPDATE espectaculos SET name=?, estadio_id=?, timestamp=? WHERE id = ?";
         try {
-            Integer updated = updateDeleteInsertSql(sql, esp.getName(), esp.getEstadio().getId(), esp.getTimestamp(),
-                esp.getPrice(), esp.getId());
+            Integer updated = updateDeleteInsertSql(sql, esp.getName(), esp.getEstadio().getId(), esp.getTimestamp(), esp.getId());
             if (updated != 1) {
               throw new SQLException();
             }
@@ -103,7 +102,7 @@ public class EspectaculosDB extends BaseH2 implements ICrud<Espectaculo> {
             Estadio estadio = estadioDB.get(rs.getInt(3));
 
             if (estadio != null) {
-                espectaculos.add(new Espectaculo(rs.getInt(1), rs.getString(2), estadio, rs.getTimestamp(4), rs.getDouble(5)));
+                espectaculos.add(new Espectaculo(rs.getInt(1), rs.getString(2), estadio, rs.getTimestamp(4)));
             }
 
         }
