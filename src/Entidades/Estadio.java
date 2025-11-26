@@ -13,13 +13,13 @@ public class Estadio {
     public Estadio (Integer id, String nombre, String direccion, Integer capacidad) {
         this.id       = id;
         this.name     = nombre;
-        this.address   = direccion;
+        this.address  = direccion;
         this.capacity = capacidad;
     }
 
     public Estadio (String nombre, String direccion, Integer capacidad) {
         this.name     = nombre;
-        this.address   = direccion;
+        this.address  = direccion;
         this.capacity = capacidad;
     }
     

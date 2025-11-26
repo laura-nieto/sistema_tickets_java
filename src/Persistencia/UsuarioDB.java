@@ -36,12 +36,12 @@ public class UsuarioDB extends BaseH2 implements ICrud<Usuario>{
             } else {
                 u = new Vendedor(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getBoolean(7));
             }
-            
-            cerrarConexion();
-			return u;
 		} else {
 			throw new RegistroNotFoundExeption();
 		}
+
+        cerrarConexion();
+		return u;
     }
 
     @Override

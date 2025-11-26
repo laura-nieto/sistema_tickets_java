@@ -18,18 +18,21 @@ public class UbicacionDB extends BaseH2 implements ICrud<Ubicacion> {
         String sql = "SELECT id, estadio_id, nombre, capacidad, precio FROM estadio_ubicaciones WHERE id = ?";
         ResultSet rs = selectSql(sql, id);
 
+        Ubicacion ub = null;
+
         if (rs.first()) {
 
             EstadioDB estadioDb = new EstadioDB();
             Estadio estadio = estadioDb.get(rs.getInt(2));
 
-			Ubicacion ub = new Ubicacion(rs.getInt(1), rs.getString(3), rs.getInt(4), rs.getDouble(5), estadio);
+			ub = new Ubicacion(rs.getInt(1), rs.getString(3), rs.getInt(4), rs.getDouble(5), estadio);
             
-            cerrarConexion();
-            return ub;
         } else {
             throw new RegistroNotFoundExeption();
         }
+
+        cerrarConexion();
+        return ub;
     }
 
     @Override
@@ -53,6 +56,7 @@ public class UbicacionDB extends BaseH2 implements ICrud<Ubicacion> {
             ubicaciones.add(new Ubicacion(rs.getInt(1), rs.getString(3), rs.getInt(4), rs.getDouble(5), estadio));
         }
         
+        cerrarConexion();
         return ubicaciones;
     }
 
@@ -70,6 +74,7 @@ public class UbicacionDB extends BaseH2 implements ICrud<Ubicacion> {
             ubicaciones.add(new Ubicacion(rs.getInt(1), rs.getString(3), rs.getInt(4), rs.getDouble(5), estadio));
         }
         
+        cerrarConexion();
         return ubicaciones;
     }
 

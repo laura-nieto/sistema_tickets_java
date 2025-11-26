@@ -37,6 +37,7 @@ public class AppView extends JFrame {
         UsuarioView usuarioPanel = new UsuarioView(this);
         EspectaculoView espectaculoPanel = new EspectaculoView(this);
         VentaView ventaView = new VentaView(this);
+        ReporteEspectaculosView reportEspectaculoView = new ReporteEspectaculosView(this);
 
         // Vista de pantallas
         mainPanel.add(loginPanel, "login");
@@ -46,6 +47,7 @@ public class AppView extends JFrame {
         mainPanel.add(usuarioPanel, "listado_usuarios");
         mainPanel.add(espectaculoPanel, "listado_espectaculos");
         mainPanel.add(ventaView, "venta");
+        mainPanel.add(reportEspectaculoView, "reporte_espectaculos");
 
         borderMain.add(mainPanel);
         add(borderMain);
@@ -57,6 +59,8 @@ public class AppView extends JFrame {
 
         if (isAdmin) {
             JMenu menuReportes = new JMenu("Reportes");
+            JMenuItem itemReporteEspectaculos = new JMenuItem("Espectaculos");
+            itemReporteEspectaculos.addActionListener(e -> cambiarVista("reporte_espectaculos"));
 
             JMenu menuEstadio = new JMenu("Estadios");
             JMenuItem itemEstadio = new JMenuItem("Listado Estadio");
@@ -76,6 +80,7 @@ public class AppView extends JFrame {
             menuEstadio.add(itemUbicacion);
             menuUsuario.add(itemUsuario);
             menuEspectaculo.add(itemEspectaculo);
+            menuReportes.add(itemReporteEspectaculos);
 
             menuBar.add(menuEspectaculo);
             menuBar.add(menuEstadio);

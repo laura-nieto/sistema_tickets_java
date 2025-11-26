@@ -28,6 +28,7 @@ public class Entrada {
         this.espectaculo = espectaculo;
         this.vendedor = vendedor;
         this.soldAt = vendido;
+        this.ubicacion = ubicacion;
     }
 
     public Integer getId() {

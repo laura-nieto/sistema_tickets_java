@@ -26,8 +26,11 @@ public class EstadioDB extends BaseH2 implements ICrud<Estadio>{
     public Estadio get(Integer id) throws IOException, ClassNotFoundException, SQLException, RegistroNotFoundExeption {
 		String sql = "SELECT id, name, address, capacity FROM estadios WHERE id = ?";
 		ResultSet rs = selectSql(sql, id);
+
+		Estadio est = null;
+
 		if (rs.first()) {
-			Estadio est = new Estadio(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4));
+			est = new Estadio(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4));
 			
 			// Cargo ubicaciones del estadio
 			String sqlUb = "SELECT id, nombre, capacidad, precio FROM estadio_ubicaciones WHERE estadio_id = ?";
@@ -39,12 +42,12 @@ public class EstadioDB extends BaseH2 implements ICrud<Estadio>{
 			}
 
         	est.setUbicaciones(ubicaciones);
-			
-			cerrarConexion();
-			return est;
 		} else {
 			throw new RegistroNotFoundExeption();
 		}
+
+		cerrarConexion();
+		return est;
     }
 
     @Override

@@ -18,7 +18,7 @@ public class EntradaDB extends BaseH2 implements ICrud<Entrada>{
     public void save(Entrada entrada) throws SQLException {
 		String sql = "INSERT INTO entradas (buyer_document, buyer_name, espectaculo_id, ubicacion_id, vendedor_id, soldAt) VALUES (?,?,?,?,?,?)";
         try {
-    		updateDeleteInsertSql(sql, entrada.getDocument(), entrada.getBuyerName(), entrada.getEspectaculo().getId(), entrada.getVendedor().getId(), entrada.getSoldAt());
+    		updateDeleteInsertSql(sql, entrada.getDocument(), entrada.getBuyerName(), entrada.getEspectaculo().getId(), entrada.getUbicacion().getId() ,entrada.getVendedor().getId(), entrada.getSoldAt());
         } catch (SQLException e) {
             throw e;
         }
@@ -65,13 +65,13 @@ public class EntradaDB extends BaseH2 implements ICrud<Entrada>{
             Espectaculo espectaculo = espectaculosDB.get(rs.getInt(4));
 
             UsuarioDB usuarioDB = new UsuarioDB();
-            Usuario user = usuarioDB.get(rs.getInt(5));
+            Usuario user = usuarioDB.get(rs.getInt(6));
 
             UbicacionDB ubicacionDB = new UbicacionDB();
-            Ubicacion ubicacion = ubicacionDB.get(5);
+            Ubicacion ubicacion = ubicacionDB.get(rs.getInt(5));
 
-            if (espectaculo != null && user != null) {
-                entradas.add(new Entrada(rs.getInt(1), rs.getString(2), rs.getString(3), espectaculo, user, rs.getTimestamp(6), ubicacion));
+            if (espectaculo != null && user != null && ubicacion != null) {
+                entradas.add(new Entrada(rs.getInt(1), rs.getString(2), rs.getString(3), espectaculo, user, rs.getTimestamp(7), ubicacion));
             }
         }
         cerrarConexion();

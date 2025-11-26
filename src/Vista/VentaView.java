@@ -191,9 +191,12 @@ public class VentaView extends JPanel{
 
         String nombre = txtNombre.getText();
         String doc = txtDoc.getText();
+        
+        ComboItem comboElegido = (ComboItem) txtUbicacion.getSelectedItem();
+        Integer idUbicacion = comboElegido.getValue();
 
         try {
-            Entrada entrada = service.sell(frame.getUsuarioLogeado(), nombre, doc, idEspectaculoElegido);
+            Entrada entrada = service.sell(frame.getUsuarioLogeado(), nombre, doc, idEspectaculoElegido, idUbicacion);
 
             if (entrada != null) {
                 JOptionPane.showMessageDialog(frame, "Se realizo la venta", "Venta exitosa", JOptionPane.INFORMATION_MESSAGE);

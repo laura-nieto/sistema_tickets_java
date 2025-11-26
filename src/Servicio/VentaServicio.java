@@ -88,7 +88,7 @@ public class VentaServicio {
         return ubicacions;
     }
 
-    public Entrada sell(Usuario user, String nombre, String documento, Integer idEspectaculo) throws RegistroNotFoundExeption, EspacioRestanteException {
+    public Entrada sell(Usuario user, String nombre, String documento, Integer idEspectaculo, Integer idUbicacion) throws RegistroNotFoundExeption, EspacioRestanteException {
 
         Entrada entrada = null;
 
@@ -99,7 +99,7 @@ public class VentaServicio {
             Espectaculo espectaculo = persEspectaculo.get(idEspectaculo);
 
             // Cargo las entradas para verificar que todavía haya espacio
-            String sql = "SELECT id, buyer_document, buyer_name, espectaculo_id, vendedor_id, soldAt FROM entradas WHERE espectaculo_id = ?";
+            String sql = "SELECT id, buyer_document, buyer_name, espectaculo_id, ubicacion_id, vendedor_id, soldAt FROM entradas WHERE espectaculo_id = ?";
 
             List<Entrada> entradasEspectaculo = persEntrada.getList(sql, espectaculo.getId());
 
@@ -109,7 +109,9 @@ public class VentaServicio {
                 throw new EspacioRestanteException();
             }
 
-            //entrada = new Entrada(documento, nombre, espectaculo, user, hoy);
+            Ubicacion ubicacion = persUbicacion.get(idUbicacion);
+
+            entrada = new Entrada(documento, nombre, espectaculo, user, hoy, ubicacion);
 
             persEntrada.save(entrada);
 

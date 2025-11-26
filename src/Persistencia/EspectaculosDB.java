@@ -26,18 +26,22 @@ public class EspectaculosDB extends BaseH2 implements ICrud<Espectaculo> {
     public Espectaculo get(Integer id) throws IOException, ClassNotFoundException, SQLException, RegistroNotFoundExeption {
         String sql = "SELECT id, name, estadio_id, timestamp FROM espectaculos WHERE id = ?";
         ResultSet rs = selectSql(sql, id);
+
+        Espectaculo esp = null;
+
         if (rs.first()) {
             // Obtengo id del estadio
             Integer estadioId = rs.getInt(3);
             EstadioDB estadioDB = new EstadioDB();
             Estadio estadio = estadioDB.get(estadioId);
 
-            Espectaculo esp = new Espectaculo(rs.getInt(1), rs.getString(2), estadio, rs.getTimestamp(4));
-            cerrarConexion();
-            return esp;
+            esp = new Espectaculo(rs.getInt(1), rs.getString(2), estadio, rs.getTimestamp(4));
         } else {
             throw new RegistroNotFoundExeption();
         }
+
+        cerrarConexion();
+        return esp;
     }
 
     @Override
