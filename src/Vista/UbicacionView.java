@@ -222,6 +222,8 @@ public class UbicacionView extends JPanel {
         ComboItem item = (ComboItem) txtEstadio.getSelectedItem();
         Integer idEstadio = item.getValue();
 
+        Boolean okAction = false;
+
         try {
 
             // Obtengo el estadio
@@ -230,10 +232,14 @@ public class UbicacionView extends JPanel {
             if (modoEdicion && idEdicion >= 0) {
                 service.edit(idEdicion, nombre, precio, capacidad, estadio);
 
+                okAction = true;
+
                 modoEdicion = false;
                 idEdicion = null;
             } else {
                 service.insert(nombre, estadio, precio, capacidad);
+                
+                okAction = true;
             }
         } catch (DatabaseException e) {
             JOptionPane.showMessageDialog(frame, "Hubo un problema, reintente nuevamente.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -241,8 +247,15 @@ public class UbicacionView extends JPanel {
             JOptionPane.showMessageDialog(frame, "Parece que el registro no existe.", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
-        cargarDatos();
-        layout.show(panelCards, "lista");
+        if (okAction) {
+            
+            txtNombre.setText("");
+            txtCapacidad.setText("");
+            txtPrecio.setText("");
+
+            cargarDatos();
+            layout.show(panelCards, "lista");
+        }
     }
 
     private void validarCampos() throws FormularioInvalidoException {

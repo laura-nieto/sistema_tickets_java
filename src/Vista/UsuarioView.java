@@ -205,6 +205,8 @@ public class UsuarioView extends JPanel{
         String password = txtPassword.getText();
         Boolean admin = txtIsAdmin.isSelected();
 
+        Boolean okAction = false;
+
         if (modoEdicion && idEdicion >= 0) {
             try {
                 service.edit(idEdicion, nombre, apellido, documento, username, password, admin);
@@ -214,11 +216,16 @@ public class UsuarioView extends JPanel{
                 JOptionPane.showMessageDialog(frame, "Parece que el registro no existe.", "Error", JOptionPane.ERROR_MESSAGE);
             }
 
+            okAction = true;
+
             modoEdicion = false;
             idEdicion = null;
         } else {
             try {
                 service.insert(nombre, apellido, documento, username, password, admin);
+            
+                okAction = true;
+
             } catch (DatabaseException | RegistroNotFoundExeption e) {
                 JOptionPane.showMessageDialog(frame, "Hubo un problema, reintente nuevamente.", "Error", JOptionPane.ERROR_MESSAGE);
             } catch (UsuarioExistenteException e) {
@@ -226,8 +233,18 @@ public class UsuarioView extends JPanel{
             }
         }
 
-        cargarDatos();
-        layout.show(panelCards, "lista");
+        if (okAction) {
+
+            txtApellido.setText("");
+            txtNombre.setText("");
+            txtDocumento.setText("");
+            txtUsername.setText("");
+            txtPassword.setText("");
+            txtIsAdmin.setSelected(false);
+            
+            cargarDatos();
+            layout.show(panelCards, "lista");
+        }
     }
 
     private void validarCampos() throws FormularioInvalidoException {

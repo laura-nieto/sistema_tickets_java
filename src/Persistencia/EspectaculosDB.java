@@ -89,9 +89,25 @@ public class EspectaculosDB extends BaseH2 implements ICrud<Espectaculo> {
     }
 
     @Override
-    public Espectaculo get(String sql, Object... params) throws IOException, ClassNotFoundException, SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'get'");
+    public Espectaculo get(String sql, Object... params) throws IOException, ClassNotFoundException, SQLException, RegistroNotFoundExeption {
+
+        ResultSet rs = selectSql(sql, params);
+
+        Espectaculo esp = null;
+
+        if (rs.first()) {
+            // Obtengo id del estadio
+            Integer estadioId = rs.getInt(3);
+            EstadioDB estadioDB = new EstadioDB();
+            Estadio estadio = estadioDB.get(estadioId);
+
+            esp = new Espectaculo(rs.getInt(1), rs.getString(2), estadio, rs.getTimestamp(4));
+        } else {
+            throw new RegistroNotFoundExeption();
+        }
+
+        cerrarConexion();
+        return esp;
     }
 
     @Override

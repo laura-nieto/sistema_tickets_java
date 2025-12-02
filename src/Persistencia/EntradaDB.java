@@ -31,9 +31,29 @@ public class EntradaDB extends BaseH2 implements ICrud<Entrada>{
     }
 
     @Override
-    public List<Entrada> getList() throws SQLException, IOException, ClassNotFoundException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'get'");
+    public List<Entrada> getList() throws SQLException, IOException, ClassNotFoundException, RegistroNotFoundExeption {
+        
+        String sql = "SELECT id, buyer_document, buyer_name, espectaculo_id, ubicacion_id, vendedor_id, soldAt FROM entradas";
+		ResultSet rs = super.selectSql(sql);
+        List<Entrada> entradas = new ArrayList<>();
+
+        while (rs.next()) {
+
+            EspectaculosDB espectaculosDB = new EspectaculosDB();
+            Espectaculo espectaculo = espectaculosDB.get(rs.getInt(4));
+
+            UsuarioDB usuarioDB = new UsuarioDB();
+            Usuario user = usuarioDB.get(rs.getInt(6));
+
+            UbicacionDB ubicacionDB = new UbicacionDB();
+            Ubicacion ubicacion = ubicacionDB.get(rs.getInt(5));
+
+            if (espectaculo != null && user != null && ubicacion != null) {
+                entradas.add(new Entrada(rs.getInt(1), rs.getString(2), rs.getString(3), espectaculo, user, rs.getTimestamp(7), ubicacion));
+            }
+        }
+        cerrarConexion();
+        return entradas;
     }
 
     @Override

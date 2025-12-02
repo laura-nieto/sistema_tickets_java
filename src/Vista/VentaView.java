@@ -192,6 +192,8 @@ public class VentaView extends JPanel{
         String nombre = txtNombre.getText();
         String doc = txtDoc.getText();
         
+        Boolean okAction = false;
+
         ComboItem comboElegido = (ComboItem) txtUbicacion.getSelectedItem();
         Integer idUbicacion = comboElegido.getValue();
 
@@ -200,6 +202,8 @@ public class VentaView extends JPanel{
 
             if (entrada != null) {
                 JOptionPane.showMessageDialog(frame, "Se realizo la venta", "Venta exitosa", JOptionPane.INFORMATION_MESSAGE);
+
+                okAction = true;
             }
 
         } catch (RegistroNotFoundExeption e) {
@@ -208,8 +212,14 @@ public class VentaView extends JPanel{
             JOptionPane.showMessageDialog(frame, "Parece que no hay mas entradas a la venta.", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
-        cargarDatos();
-        layout.show(panelCards, "lista");
+        if (okAction) {
+            
+            txtDoc.setText("");
+            txtNombre.setText("");
+            
+            cargarDatos();
+            layout.show(panelCards, "lista");
+        }
     }
 
     private void mostrarFormulario(int id) {

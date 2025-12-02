@@ -55,6 +55,10 @@ public class Espectaculo {
         this.entradas = entradas;
     }
 
+    public List<Entrada> getEntradas() {
+        return this.entradas;
+    }
+
     public Integer espacioRestante() {
 
         Integer cantEntradas = this.entradas.size();

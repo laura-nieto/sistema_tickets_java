@@ -1,5 +1,7 @@
 package Entidades;
 
+import javax.swing.JMenuBar;
+
 public abstract class Usuario {
 
     private Integer id;
@@ -89,4 +91,6 @@ public abstract class Usuario {
     public void setIsAdmin(Boolean isAdmin) {
         this.isAdmin = isAdmin;
     }
+
+    public abstract JMenuBar crearMenu();
 }

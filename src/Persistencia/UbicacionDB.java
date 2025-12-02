@@ -37,8 +37,24 @@ public class UbicacionDB extends BaseH2 implements ICrud<Ubicacion> {
 
     @Override
     public Ubicacion get(String sql, Object... params) throws IOException, ClassNotFoundException, SQLException, RegistroNotFoundExeption {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'get'");
+
+		ResultSet rs = super.selectSql(sql, params);
+
+        Ubicacion ub = null;
+        
+        if (rs.first()) {
+
+            EstadioDB estadioDb = new EstadioDB();
+            Estadio estadio = estadioDb.get(rs.getInt(2));
+
+			ub = new Ubicacion(rs.getInt(1), rs.getString(3), rs.getInt(4), rs.getDouble(5), estadio);
+            
+        } else {
+            throw new RegistroNotFoundExeption();
+        }
+
+        cerrarConexion();
+        return ub;
     }
 
     @Override

@@ -3,10 +3,8 @@ package Vista;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.sql.Timestamp;
-import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
@@ -58,7 +56,7 @@ public class ReporteEspectaculosView extends JPanel {
         // Columna Desde
         gbc.gridx = 0;
         gbc.gridy = 0;
-        panelFiltros.add(new JLabel("Desde (yyyy-MM-dd):"), gbc);
+        panelFiltros.add(new JLabel("Desde (yyyy-mm-dd):"), gbc);
 
         gbc.gridy = 1;
         txtDesde = new JTextField(10);
@@ -67,7 +65,7 @@ public class ReporteEspectaculosView extends JPanel {
         // Columna Hasta
         gbc.gridx = 1;
         gbc.gridy = 0;
-        panelFiltros.add(new JLabel("Hasta (yyyy-MM-dd):"), gbc);
+        panelFiltros.add(new JLabel("Hasta (yyyy-mm-dd):"), gbc);
 
         gbc.gridy = 1;
         txtHasta = new JTextField(10);

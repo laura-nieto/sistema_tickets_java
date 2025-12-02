@@ -27,4 +27,4 @@ Pequeño proyecto diseñado para la venta de entradas a espectáculos.
 
 ## Support
 
-Ante cualquier duda, comunicarse vía email a m.nieto@buenosaires.gob.ar.
+Ante cualquier duda, comunicarse vía email a mnieto20@up.edu.ar

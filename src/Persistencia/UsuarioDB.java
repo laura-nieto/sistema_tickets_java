@@ -87,7 +87,7 @@ public class UsuarioDB extends BaseH2 implements ICrud<Usuario>{
     }
 
     @Override
-    public Usuario get(String sql, Object... params) throws IOException, ClassNotFoundException, SQLException {
+    public Usuario get(String sql, Object... params) throws IOException, ClassNotFoundException, SQLException, RegistroNotFoundExeption {
 
 		ResultSet rs = selectSql(sql, params);
 
@@ -99,7 +99,9 @@ public class UsuarioDB extends BaseH2 implements ICrud<Usuario>{
             } else {
                 u = new Vendedor(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getBoolean(7));
             }
-		}
+		} else {
+            throw new RegistroNotFoundExeption();
+        }
 
         cerrarConexion();
 		return u;
@@ -107,8 +109,19 @@ public class UsuarioDB extends BaseH2 implements ICrud<Usuario>{
 
     @Override
     public List<Usuario> getList(String sql, Object... params) throws SQLException, IOException, ClassNotFoundException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getList'");
+        ResultSet rs = super.selectSql(sql, params);
+
+        List<Usuario> usuarios = new ArrayList<>();
+
+        while (rs.next()) {
+            if (rs.getBoolean(6)) {
+                usuarios.add(new Administrador(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getBoolean(6)));
+            } else {
+                usuarios.add(new Vendedor(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getBoolean(6)));
+            }
+		}
+		cerrarConexion();
+		return usuarios;
     }
 
 }

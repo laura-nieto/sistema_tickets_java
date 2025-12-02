@@ -62,10 +62,13 @@ INSERT INTO estadios (NAME, CAPACITY, ADDRESS)
 VALUES ('Luna Park', 8400, 'Av. Eduardo Madero 470');
 
 INSERT INTO estadio_ubicaciones (estadio_id, nombre, capacidad, precio) 
-VALUES (1, 'Platea Alta Derecha', 700, 3500);
+VALUES (1, 'Platea Alta Derecha', 700, 10500);
 
 INSERT INTO estadio_ubicaciones (estadio_id, nombre, capacidad, precio) 
-VALUES (1, 'Platea Media Derecha', 700, 5500);
+VALUES (1, 'Platea Media Derecha', 700, 10500);
 
 INSERT INTO estadio_ubicaciones (estadio_id, nombre, capacidad, precio) 
-VALUES (1, 'Campo Delantero', 700, 15500);
+VALUES (1, 'Campo Delantero', 3, 25500);
+
+INSERT INTO espectaculos (name, estadio_id, timestamp) 
+VALUES ('Imagine Dragons', 1, '2026-01-10 19:30');

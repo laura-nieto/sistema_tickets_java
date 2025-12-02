@@ -4,7 +4,6 @@ import java.awt.GridLayout;
 
 import javax.swing.*;
 
-import Entidades.Administrador;
 import Entidades.Usuario;
 import Excepciones.FormularioInvalidoException;
 import Excepciones.RegistroNotFoundExeption;
@@ -68,18 +67,14 @@ public class LoginView extends JPanel {
             // Valido el usuario
             Usuario user = service.login(usuario, password);
 
-            // Armo el menu
-            if (user instanceof Administrador) {
-                frame.createMenu(true);
-            } else {
-                frame.createMenu(false);
-            }
-
             // Muestro mensaje
             JOptionPane.showMessageDialog(frame, "Login exitoso", "Login", JOptionPane.INFORMATION_MESSAGE);
 
             // Guardo Usuario que se logea
             frame.setUsuarioLogeado(user);
+
+            // Armo el menu
+            frame.createMenu();
 
             // Cambio de vista
             frame.cambiarVista("principal");

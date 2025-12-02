@@ -149,7 +149,7 @@ public class EspectaculoView extends JPanel {
         txtNombre = new JTextField();
         panelFormulario.add(txtNombre);
 
-        panelFormulario.add(new JLabel("Fecha:"));
+        panelFormulario.add(new JLabel("Fecha y Hora (yyyy-mm-dd hh:mm):"));
         txtFecha = new JTextField();
         panelFormulario.add(txtFecha);
 
@@ -219,6 +219,8 @@ public class EspectaculoView extends JPanel {
         ComboItem item = (ComboItem) txtEstadio.getSelectedItem();
         Integer idEstadio = item.getValue();
 
+        Boolean okAction = false;
+
         try {
             // Formateo Fecha - Dentro del try porque me tira excepcion sdf.parse
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -232,10 +234,14 @@ public class EspectaculoView extends JPanel {
             if (modoEdicion && idEdicion >= 0) {
                 service.edit(idEdicion, nombre, estadio, fechaTime);
 
+                okAction = true;
+
                 modoEdicion = false;
                 idEdicion = null;
             } else {
                 service.insert(nombre, estadio, fechaTime);
+                
+                okAction = true;
             }
         } catch (ParseException e) {
             JOptionPane.showMessageDialog(frame, "El formato de la fecha es incorrecto.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -245,8 +251,14 @@ public class EspectaculoView extends JPanel {
             JOptionPane.showMessageDialog(frame, "Parece que el registro no existe.", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
-        cargarDatos();
-        layout.show(panelCards, "lista");
+        if (okAction) {
+
+            txtFecha.setText("");
+            txtNombre.setText("");
+
+            cargarDatos();
+            layout.show(panelCards, "lista");
+        }
     }
 
     private void validarCampos() throws FormularioInvalidoException {

@@ -98,19 +98,25 @@ public class VentaServicio {
 
             Espectaculo espectaculo = persEspectaculo.get(idEspectaculo);
 
-            // Cargo las entradas para verificar que todavía haya espacio
-            String sql = "SELECT id, buyer_document, buyer_name, espectaculo_id, ubicacion_id, vendedor_id, soldAt FROM entradas WHERE espectaculo_id = ?";
+            Ubicacion ubicacion = persUbicacion.get(idUbicacion);
 
-            List<Entrada> entradasEspectaculo = persEntrada.getList(sql, espectaculo.getId());
+            // Cargo las entradas para verificar que todavía haya espacio
+            String sql = "SELECT id, buyer_document, buyer_name, espectaculo_id, ubicacion_id, vendedor_id, soldAt FROM entradas WHERE espectaculo_id = ? AND ubicacion_id = ?";
+
+            List<Entrada> entradasEspectaculo = persEntrada.getList(sql, espectaculo.getId(), ubicacion.getId());
 
             espectaculo.setEntradas(entradasEspectaculo);
 
-            if (espectaculo.espacioRestante() < 1) {
+            // Valido espacio por ubicacion
+            Integer espacioUbicacion = ubicacion.getCapacidad();
+            Integer cantEntradasUbicacion = espectaculo.getEntradas().size();
+            Integer espacioActual = espacioUbicacion - cantEntradasUbicacion;
+
+            if (espacioActual < 1) {
                 throw new EspacioRestanteException();
             }
 
-            Ubicacion ubicacion = persUbicacion.get(idUbicacion);
-
+            // Creo entrada
             entrada = new Entrada(documento, nombre, espectaculo, user, hoy, ubicacion);
 
             persEntrada.save(entrada);

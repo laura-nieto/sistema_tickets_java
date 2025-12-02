@@ -54,58 +54,38 @@ public class AppView extends JFrame {
         setVisible(true);
     }
 
-    public void createMenu(Boolean isAdmin) {
-        JMenuBar menuBar = new JMenuBar();
+    public void createMenu() {
+        JMenuBar menuBar = usuarioLogeado.crearMenu();
 
-        if (isAdmin) {
-            JMenu menuReportes = new JMenu("Reportes");
-            JMenuItem itemReporteEspectaculos = new JMenuItem("Espectaculos");
-            itemReporteEspectaculos.addActionListener(e -> cambiarVista("reporte_espectaculos"));
+        for (int i = 0; i < menuBar.getMenuCount(); i++) {
+            JMenu m = menuBar.getMenu(i);
 
-            JMenu menuEstadio = new JMenu("Estadios");
-            JMenuItem itemEstadio = new JMenuItem("Listado Estadio");
-            JMenuItem itemUbicacion = new JMenuItem("Ubicaciones");
-            itemEstadio.addActionListener(e -> cambiarVista("listado_estadios"));
-            itemUbicacion.addActionListener(e -> cambiarVista("listado_ubicaciones"));
+            for (int j = 0; j < m.getItemCount(); j++) {
+                JMenuItem item = m.getItem(j);
 
-            JMenu menuEspectaculo = new JMenu("Espectaculos");
-            JMenuItem itemEspectaculo = new JMenuItem("Listado");
-            itemEspectaculo.addActionListener(e -> cambiarVista("listado_espectaculos"));
+                if (item == null) continue;
 
-            JMenu menuUsuario = new JMenu("Usuarios");
-            JMenuItem itemUsuario = new JMenuItem("Listado");
-            itemUsuario.addActionListener(e -> cambiarVista("listado_usuarios"));
-
-            menuEstadio.add(itemEstadio);
-            menuEstadio.add(itemUbicacion);
-            menuUsuario.add(itemUsuario);
-            menuEspectaculo.add(itemEspectaculo);
-            menuReportes.add(itemReporteEspectaculos);
-
-            menuBar.add(menuEspectaculo);
-            menuBar.add(menuEstadio);
-            menuBar.add(menuUsuario);
-            menuBar.add(menuReportes);
-
-
-            // Porque me molesta tener que cerrar sesion para revisar la db
-
-            JMenu menuVenta = new JMenu("Venta");
-            JMenuItem itemVenta = new JMenuItem("Listado");
-
-            itemVenta.addActionListener(e -> cambiarVista("venta"));
-
-            menuVenta.add(itemVenta);
-            menuBar.add(menuVenta);
-
-        } else {
-            JMenu menuVenta = new JMenu("Venta");
-            JMenuItem itemVenta = new JMenuItem("Listado");
-
-            itemVenta.addActionListener(e -> cambiarVista("venta"));
-
-            menuVenta.add(itemVenta);
-            menuBar.add(menuVenta);
+                switch (item.getActionCommand()) {
+                    case "reportes":
+                        item.addActionListener(e -> cambiarVista("reporte_espectaculos"));
+                        break;
+                    case "abm_estadios":
+                        item.addActionListener(e -> cambiarVista("listado_estadios"));
+                        break;
+                    case "abm_ubicaciones":
+                        item.addActionListener(e -> cambiarVista("listado_ubicaciones"));
+                        break;
+                    case "abm_espectaculos":
+                        item.addActionListener(e -> cambiarVista("listado_espectaculos"));
+                        break;
+                    case "abm_usuarios":
+                        item.addActionListener(e -> cambiarVista("listado_usuarios"));
+                        break;
+                    case "venta":
+                        item.addActionListener(e -> cambiarVista("venta"));
+                        break;
+                }
+            }
         }
 
         setJMenuBar(menuBar);

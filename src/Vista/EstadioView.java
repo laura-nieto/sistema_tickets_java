@@ -187,27 +187,42 @@ public class EstadioView extends JPanel {
         Integer capacidad = Integer.valueOf(txtCapacidad.getText());
         String direccion = txtDireccion.getText();
 
+        Boolean okAction = false;
+
         if (modoEdicion && idEdicion >= 0) {
             try {
                 service.edit(idEdicion, nombre, capacidad, direccion);
+
+                okAction = true;
+
+                modoEdicion = false;
+                idEdicion = null;
             } catch (DatabaseException e) {
                 JOptionPane.showMessageDialog(frame, "Hubo un problema, reintente nuevamente.", "Error", JOptionPane.ERROR_MESSAGE);
             } catch (RegistroNotFoundExeption e) {
                 JOptionPane.showMessageDialog(frame, "Parece que el registro no existe.", "Error", JOptionPane.ERROR_MESSAGE);
             }
 
-            modoEdicion = false;
-            idEdicion = null;
+
         } else {
             try {
                 service.insert(nombre, capacidad, direccion);
+
+                okAction = true;
             } catch (DatabaseException e) {
                 JOptionPane.showMessageDialog(frame, "Hubo un problema, reintente nuevamente.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
+    
+        // Si se hizo el insert o update, limpio campos y recargo vista principal
+        if (okAction) {
+            txtNombre.setText("");
+            txtDireccion.setText("");
+            txtNombre.setText("");
 
-        cargarDatos();
-        layout.show(panelCards, "lista");
+            cargarDatos();
+            layout.show(panelCards, "lista");
+        }
     }
 
     private void validarCampos() throws FormularioInvalidoException {

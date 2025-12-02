@@ -89,16 +89,42 @@ public class EstadioDB extends BaseH2 implements ICrud<Estadio>{
     }
 
 	@Override
-	public Estadio get(String sql, Object... params) throws IOException, ClassNotFoundException, SQLException {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'get'");
+	public Estadio get(String sql, Object... params) throws IOException, ClassNotFoundException, SQLException, RegistroNotFoundExeption {
+
+		ResultSet rs = selectSql(sql, params);
+
+		Estadio est = null;
+
+		if (rs.first()) {
+			est = new Estadio(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4));
+			
+			// Cargo ubicaciones del estadio
+			String sqlUb = "SELECT id, nombre, capacidad, precio FROM estadio_ubicaciones WHERE estadio_id = ?";
+			ResultSet rsUb = selectSql(sqlUb, est.getId());
+
+			List<Ubicacion> ubicaciones = new ArrayList<>();
+			while (rsUb.next()) {
+				ubicaciones.add(new Ubicacion(rsUb.getInt(1), rsUb.getString(2), rsUb.getInt(3), rsUb.getDouble(4), est));
+			}
+
+        	est.setUbicaciones(ubicaciones);
+		} else {
+			throw new RegistroNotFoundExeption();
+		}
+
+		cerrarConexion();
+		return est;
 	}
 
 	@Override
-	public List<Estadio> getList(String sql, Object... params)
-			throws SQLException, IOException, ClassNotFoundException {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'getList'");
+	public List<Estadio> getList(String sql, Object... params) throws SQLException, IOException, ClassNotFoundException {
+		ResultSet rs = super.selectSql(sql, params);
+		List<Estadio> estadios = new ArrayList<>();
+		while (rs.next()) {
+			estadios.add(new Estadio(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4)));
+		}
+		cerrarConexion();
+		return estadios;
 	}
 
 }
