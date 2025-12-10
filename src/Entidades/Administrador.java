@@ -57,12 +57,12 @@ public class Administrador extends Usuario {
         menuBar.add(menuReportes);
 
         // Porque me molesta tener que cerrar sesion para revisar la db
-        JMenu menuVenta = new JMenu("Venta");
+        /*JMenu menuVenta = new JMenu("Venta");
         JMenuItem itemVenta = new JMenuItem("Listado");
         itemVenta.setActionCommand("venta");
         //itemVenta.addActionListener(e -> cambiarVista("venta"));
         menuVenta.add(itemVenta);
-        menuBar.add(menuVenta);
+        menuBar.add(menuVenta);*/
 
         return menuBar;
     }

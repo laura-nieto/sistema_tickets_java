@@ -22,6 +22,14 @@ public class Vendedor extends Usuario {
         super(id, nombre, apellido, doc, usuario, isAdmin);
     }
 
+    public List<Entrada> getEntradas() {
+        return entradas;
+    }
+
+    public void setEntradas(List<Entrada> entradas) {
+        this.entradas = entradas;
+    }
+
     @Override
     public JMenuBar crearMenu() {
         JMenuBar menuBar = new JMenuBar();

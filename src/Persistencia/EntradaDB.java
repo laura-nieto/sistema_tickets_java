@@ -26,8 +26,31 @@ public class EntradaDB extends BaseH2 implements ICrud<Entrada>{
 
     @Override
     public Entrada get(Integer id) throws IOException, ClassNotFoundException, SQLException, RegistroNotFoundExeption {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'get'");
+        String sql = "SELECT id, buyer_document, buyer_name, espectaculo_id, ubicacion_id, vendedor_id, soldAt FROM entradas WHERE id = ?";
+
+		ResultSet rs = selectSql(sql, id);
+
+        Entrada entrada = null;
+
+        if (rs.first()) {
+
+            EspectaculosDB espectaculosDB = new EspectaculosDB();
+            Espectaculo espectaculo = espectaculosDB.get(rs.getInt(4));
+
+            UsuarioDB usuarioDB = new UsuarioDB();
+            Usuario user = usuarioDB.get(rs.getInt(6));
+
+            UbicacionDB ubicacionDB = new UbicacionDB();
+            Ubicacion ubicacion = ubicacionDB.get(rs.getInt(5));
+
+            if (espectaculo != null && user != null && ubicacion != null) {
+                entrada = new Entrada(rs.getInt(1), rs.getString(2), rs.getString(3), espectaculo, user, rs.getTimestamp(7), ubicacion);
+            }
+        } else {
+			throw new RegistroNotFoundExeption();
+        }
+        cerrarConexion();
+        return entrada;
     }
 
     @Override
@@ -69,9 +92,30 @@ public class EntradaDB extends BaseH2 implements ICrud<Entrada>{
     }
 
     @Override
-    public Entrada get(String sql, Object... params) throws IOException, ClassNotFoundException, SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'get'");
+    public Entrada get(String sql, Object... params) throws IOException, ClassNotFoundException, SQLException, RegistroNotFoundExeption {
+		ResultSet rs = selectSql(sql, params);
+
+        Entrada entrada = null;
+
+        if (rs.first()) {
+
+            EspectaculosDB espectaculosDB = new EspectaculosDB();
+            Espectaculo espectaculo = espectaculosDB.get(rs.getInt(4));
+
+            UsuarioDB usuarioDB = new UsuarioDB();
+            Usuario user = usuarioDB.get(rs.getInt(6));
+
+            UbicacionDB ubicacionDB = new UbicacionDB();
+            Ubicacion ubicacion = ubicacionDB.get(rs.getInt(5));
+
+            if (espectaculo != null && user != null && ubicacion != null) {
+                entrada = new Entrada(rs.getInt(1), rs.getString(2), rs.getString(3), espectaculo, user, rs.getTimestamp(7), ubicacion);
+            }
+        } else {
+			throw new RegistroNotFoundExeption();
+        }
+        cerrarConexion();
+        return entrada;
     }
 
     @Override
