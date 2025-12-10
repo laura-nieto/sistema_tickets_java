@@ -50,21 +50,35 @@ public class UsuarioServicio {
         
         Usuario usuario = null;
         
+        String sql = "SELECT id, name, lastname, document, username, password, isAdmin FROM usuarios WHERE username = ?";
+        
         try {
+            
+            // Try catch para que si lanza RegistroNotFoundExeption continue la ejecucion
+            // Valido Username
+            try {
+                Usuario existUsername = persistencia.get("SELECT id, name, lastname, document, username, password, isAdmin FROM usuarios WHERE username = ?", username);
 
-            String sql = "SELECT id, name, lastname, document, username, password, isAdmin FROM usuarios WHERE username = ?";
-            Usuario existUsername = persistencia.get(sql, username);
+                if (existUsername != null) {
+                    throw new UsuarioExistenteException();
+                }
 
-            if (existUsername != null) {
-                throw new UsuarioExistenteException();
+            } catch (RegistroNotFoundExeption e) {
+                System.out.println("El usuario con username no existe, continuo creacion");
             }
 
-            sql = "SELECT id, name, lastname, document, username, password, isAdmin FROM usuarios WHERE document = ?";
-            Usuario existDoc = persistencia.get(sql, documento);
+            // Valido Documento
+            try {
+                Usuario existDoc = persistencia.get("SELECT id, name, lastname, document, username, password, isAdmin FROM usuarios WHERE document = ?", documento);
 
-            if (existDoc != null) {
-                throw new UsuarioExistenteException();
+                if (existDoc != null) {
+                    throw new UsuarioExistenteException();
+                }
+
+            } catch (RegistroNotFoundExeption e) {
+                System.out.println("El usuario con documento no existe, continuo creacion");
             }
+
 
             if (isAdmin) {
                 usuario = new Administrador(nombre, apellido, documento, username, password, isAdmin);
