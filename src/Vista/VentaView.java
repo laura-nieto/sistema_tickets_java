@@ -209,7 +209,7 @@ public class VentaView extends JPanel{
         } catch (RegistroNotFoundExeption e) {
             JOptionPane.showMessageDialog(frame, "Parece que hubo un problema.", "Error", JOptionPane.ERROR_MESSAGE);
         } catch (EspacioRestanteException e) {
-            JOptionPane.showMessageDialog(frame, "Parece que no hay mas entradas a la venta.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(frame, "Parece que no hay mas entradas a la venta para esa ubicación.", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
         if (okAction) {

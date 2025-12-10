@@ -58,6 +58,9 @@ CREATE TABLE entradas (
 INSERT INTO usuarios (name, lastname, document, username, password, isAdmin)
 VALUES ('Laura', 'Nieto', '12345678', 'lnieto', '1234', TRUE);
     
+INSERT INTO usuarios (name, lastname, document, username, password, isAdmin)
+VALUES ('Pedro', 'Perez', '39210735', 'pperez', '1234', FALSE);
+
 INSERT INTO estadios (NAME, CAPACITY, ADDRESS) 
 VALUES ('Luna Park', 8400, 'Av. Eduardo Madero 470');
 
@@ -72,3 +75,9 @@ VALUES (1, 'Campo Delantero', 3, 25500);
 
 INSERT INTO espectaculos (name, estadio_id, timestamp) 
 VALUES ('Imagine Dragons', 1, '2026-01-10 19:30');
+
+INSERT INTO entradas (buyer_document, buyer_name, espectaculo_id, ubicacion_id, vendedor_id, soldAt)
+VALUES ('12454783', 'Juarez Morena', 1, 3, 2, '2025-12-08 16:17:25');
+
+INSERT INTO entradas (buyer_document, buyer_name, espectaculo_id, ubicacion_id, vendedor_id, soldAt)
+VALUES ('32932483', 'Luque Nicolas', 1, 3, 2, '2025-12-08 17:21:05');
