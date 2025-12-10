@@ -189,6 +189,7 @@ public class EspectaculoView extends JPanel {
 
     private void mostrarFormulario(boolean editar, int id) {
         this.modoEdicion = editar;
+        this.recargarComboEstadios();
 
         if (editar) {
 
@@ -303,6 +304,21 @@ public class EspectaculoView extends JPanel {
             } catch (RegistroNotFoundExeption e) {
                 JOptionPane.showMessageDialog(frame, "Parece que el registro no existe.", "Error", JOptionPane.ERROR_MESSAGE);
             }
+        }
+    }
+
+    private void recargarComboEstadios() {
+        txtEstadio.removeAllItems();
+
+        try {
+            List<Estadio> estadios = this.serviceEstadio.list();
+
+            for (Estadio estadio : estadios) {
+                txtEstadio.addItem(new ComboItem(estadio.getId(), estadio.getName()));
+            }
+
+        } catch (DatabaseException | RegistroNotFoundExeption e) {
+            JOptionPane.showMessageDialog(frame, "Hubo un problema, reintente nuevamente.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
